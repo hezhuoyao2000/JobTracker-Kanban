@@ -8,6 +8,10 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   transpilePackages: [],
+  // 明确禁用 Turbopack，强制使用 webpack
+  experimental: {
+    turbo: undefined, // 禁用 Turbopack
+  },
 };
 
 export default withGluestackUI(nextConfig);

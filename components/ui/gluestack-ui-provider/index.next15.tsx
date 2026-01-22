@@ -45,12 +45,21 @@ export function GluestackUIProvider({
   }, []);
 
   useSafeLayoutEffect(() => {
-    if (mode !== 'system') {
+    if (mode !== 'system' && typeof window !== 'undefined') {
       const documentElement = document.documentElement;
       if (documentElement) {
-        documentElement.classList.add(mode);
-        documentElement.classList.remove(mode === 'light' ? 'dark' : 'light');
-        documentElement.style.colorScheme = mode;
+        // 避免重复操作，只在需要时更新
+        const currentMode = documentElement.classList.contains('dark') ? 'dark' : 'light';
+        if (currentMode !== mode) {
+          documentElement.classList.remove(mode === 'light' ? 'dark' : 'light');
+          documentElement.classList.add(mode);
+          documentElement.style.colorScheme = mode;
+        } else {
+          // 即使类已经存在，也确保 colorScheme 样式正确
+          if (documentElement.style.colorScheme !== mode) {
+            documentElement.style.colorScheme = mode;
+          }
+        }
       }
     }
   }, [mode]);
