@@ -21,8 +21,15 @@
   }
 }
 
+/* 字体方案定义 */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* 默认使用 Geist Sans（无衬线字体，适合正文和界面） */
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+/* Geist Mono 字体类（等宽字体，适合代码和数字显示） */
+.font-geist-mono {
+  font-family: var(--font-geist-mono), monospace;
 }

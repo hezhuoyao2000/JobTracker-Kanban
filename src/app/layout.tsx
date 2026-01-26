@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import '@/src/app/globals.css';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { ThemeProvider } from '@/src/app/components/theme/ThemeContext';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mini Blog",
-  description: "一个简洁的博客平台",
+  title: "Job Tracker",
+  description: "Loyal companion on your carrer journey.",
 };
 
 export default function RootLayout({
@@ -27,13 +28,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN" className="dark" style={{ colorScheme: 'dark' }}>
+    <html lang="zh-CN">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <GluestackUIProvider mode="dark">
+        <ThemeProvider>
+          <GluestackUIProvider mode="light">
             {children}
-        </GluestackUIProvider>
+          </GluestackUIProvider>
+        </ThemeProvider>
         <ToastContainer
           position="top-right"
           autoClose={3000}
