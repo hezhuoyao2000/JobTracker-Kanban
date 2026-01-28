@@ -12,7 +12,12 @@ export const BoardService = {
     },
 
     //添加一张卡片
-    addJob(board: BoardData, jobtitle: string, companyName: string, statusId: string): BoardData {
+    addJob(board: BoardData, 
+        jobtitle: string, 
+        companyName: string, 
+        statusId: string,
+        options?: Partial<Omit<JobCard, 'id' | 'createdAt' | 'updatedAt' | 'jobTitle' | 'companyName' | 'statusId'>>
+    ): BoardData {
         
         const newCard: JobCard = {
             id: crypto.randomUUID(),
@@ -20,7 +25,8 @@ export const BoardService = {
             companyName: companyName,
             statusId: statusId,
             createdAt: new Date(),
-            updatedAt: new Date()
+            updatedAt: new Date(),
+            ...options
         };
         return {
             ...board,

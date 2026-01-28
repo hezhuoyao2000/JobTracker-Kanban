@@ -25,6 +25,23 @@ describe('BoardService 逻辑测试', () => {
     expect(nextBoard.cards[0].id).toBeDefined();
   });
 
+  it('应该能正确添加一张卡片并传递可选字段', () => {
+    const nextBoard = BoardService.addJob(mockBoard, '前端工程师', 'Google', 'col-1', {
+      jobLink: 'https://www.google.com',
+      sourcePlatform: 'LinkedIn',
+      expired: true,
+      jobLocation: 'San Francisco',
+    });
+
+    expect(nextBoard.cards.length).toBe(1);
+    expect(nextBoard.cards[0].jobLink).toBe('https://www.google.com');
+    expect(nextBoard.cards[0].sourcePlatform).toBe('LinkedIn');
+    expect(nextBoard.cards[0].expired).toBe(true);
+    expect(nextBoard.cards[0].jobLocation).toBe('San Francisco');
+  });
+
+
+
   it('应该能跨列移动卡片', () => {
     // 1. 先造一个带卡片的看板
     const boardWithCard = BoardService.addJob(mockBoard, '后端', 'Amazon', 'col-1');
