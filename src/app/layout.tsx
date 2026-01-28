@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Open_Sans, Playfair_Display } from "next/font/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -7,14 +7,22 @@ import '@/src/app/globals.css';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { ThemeProvider } from '@/src/app/components/theme/ThemeContext';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const playfair = Playfair_Display({
+  variable: '--font-heading',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
+const openSans = Open_Sans({
+  variable: '--font-body',
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-mono',
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -28,9 +36,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
+    <html lang="zh-CN" data-theme="light">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${playfair.variable} ${openSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
           <GluestackUIProvider mode="light">

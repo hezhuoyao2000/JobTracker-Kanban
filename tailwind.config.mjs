@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+import nativewindPreset from 'nativewind/preset';
+
+const config = {
   darkMode: process.env.DARK_MODE ? process.env.DARK_MODE : 'class',
   content: [
     './app/**/*.{html,js,jsx,ts,tsx,mdx}',
@@ -8,7 +10,7 @@ module.exports = {
     './*.{html,js,jsx,ts,tsx,mdx}',
     './src/**/*.{html,js,jsx,ts,tsx,mdx}',
   ],
-  presets: [require('nativewind/preset')],
+  presets: [nativewindPreset],
   important: 'html',
   safelist: [
     {
@@ -175,9 +177,9 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: undefined,
-        body: undefined,
-        mono: undefined,
+        heading: ['var(--font-heading)', 'serif'],
+        body: ['var(--font-body)', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
         jakarta: ['var(--font-plus-jakarta-sans)'],
         roboto: ['var(--font-roboto)'],
         code: ['var(--font-source-code-pro)'],
@@ -204,3 +206,5 @@ module.exports = {
     },
   },
 };
+
+export default config;

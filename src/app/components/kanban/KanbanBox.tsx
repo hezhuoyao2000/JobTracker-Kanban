@@ -10,8 +10,7 @@ import { KanbanColumn } from './KanbanColumn';
  */
 export function KanbanBox() {
   return (
-    <div className="flex flex-row 
-    gap-4 w-full flex-1 p-4 border rounded-3xl border-gray-400">
+    <div className="flex flex-row gap-4 flex-1 min-h-0 w-full p-4 border rounded-3xl border-gray-400">
       <KanbanColumn />
       <KanbanColumn />
       <KanbanColumn />
