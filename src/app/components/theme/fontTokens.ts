@@ -1,27 +1,61 @@
 /**
- * 字体 Token
- * 语义化字体角色，对应 CSS 变量 --font-heading / --font-body / --font-mono。
- * layout 中通过 next/font 将具体字体绑定到这些变量；此处仅定义用法与扩展方式。
+ * 字体 Token：统一管理字体加载、CSS 变量与 Tailwind 用法
  *
- * ## 当前映射（在 layout 中配置）
- * - heading -> Playfair Display（衬线，标题）
- * - body    -> Open Sans（无衬线，正文、UI）
- * - mono    -> Geist Mono（等宽，代码、数字）
+ * ## 功能
+ * 1. 用 next/font 加载字体，并绑定到 CSS 变量（--font-heading / --font-body / --font-mono）
+ * 2. 提供 fontVars、fontClass 供组件按语义使用字体
+ * 3. 导出 fontVariableClassNames，供 RootLayout 挂在 <body> 上，使全局可用
  *
- * ## 以后怎么扩展
- * 1. 新角色：在 fontClass 加键（如 display、caption），在 layout 增加对应 next/font 与 variable，
- *    在 globals.css 的 body 或 @theme 中可做 fallback，Tailwind theme.extend.fontFamily 增加对应项。
- * 2. 换字体：只改 layout 里 next/font 的绑定（即哪款字体写到 --font-heading 等），本文件不用动。
- * 3. 组件用法：className={font.heading} 或直接 font-heading / font-body / font-mono。
+ * ## 使用方式
+ * - **Layout**：从本文件导入 fontVariableClassNames，给 <body className={fontVariableClassNames}> 即可。
+ * - **组件**：className="font-heading" | "font-body" | "font-mono"，或 className={fontClass.heading} 等。
+ * - **换字体**：只改下方 fonts 里的 next/font 配置（换字体名、variable 名等），其余不用动。
+ * - **新增角色**：加一套 fontVars/fontClass 键、fonts 配置、tailwind theme.extend.fontFamily，再把新 font.variable 并入 fontVariableClassNames。
  */
 
+import {
+  Geist_Mono,
+  Open_Sans,
+  Playfair_Display,
+} from 'next/font/google';
+
+/** 各字体角色的 next/font 实例；variable 与 CSS 变量一一对应 */
+const fonts = {
+  heading: Playfair_Display({
+    variable: '--font-heading',
+    subsets: ['latin'],
+    display: 'swap',
+  }),
+  body: Open_Sans({
+    variable: '--font-body',
+    subsets: ['latin'],
+    display: 'swap',
+  }),
+  mono: Geist_Mono({
+    variable: '--font-mono',
+    subsets: ['latin'],
+    display: 'swap',
+  }),
+} as const;
+
+/**
+ * 所有字体 CSS 变量对应类名的组合，供 RootLayout 挂在 <body> 上。
+ * 使用：<body className={`${fontVariableClassNames} antialiased`}>
+ */
+export const fontVariableClassNames = [
+  fonts.heading.variable,
+  fonts.body.variable,
+  fonts.mono.variable,
+].join(' ');
+
+/** CSS 变量名，与 tailwind theme.extend.fontFamily 中的 var(--font-*) 一致 */
 export const fontVars = {
   heading: '--font-heading',
   body: '--font-body',
   mono: '--font-mono',
 } as const;
 
-/** 对应 Tailwind font-* 类名，与 theme.extend.fontFamily 一致 */
+/** 对应 Tailwind font-* 类名，与 theme.extend.fontFamily 一致；组件内用 font-heading / font-body / font-mono */
 export const fontClass = {
   heading: 'font-heading',
   body: 'font-body',
