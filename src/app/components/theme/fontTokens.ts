@@ -19,23 +19,31 @@ import {
   Playfair_Display,
 } from 'next/font/google';
 
+/**
+ * next/font 要求：字体加载器必须在模块顶层调用并赋给 const，不能写在对象字面量里。
+ * 先为每个角色单独声明 const，再组成 fonts 供下游使用。
+ */
+const fontHeading = Playfair_Display({
+  variable: '--font-heading',
+  subsets: ['latin'],
+  display: 'swap',
+});
+const fontBody = Open_Sans({
+  variable: '--font-body',
+  subsets: ['latin'],
+  display: 'swap',
+});
+const fontMono = Geist_Mono({
+  variable: '--font-mono',
+  subsets: ['latin'],
+  display: 'swap',
+});
+
 /** 各字体角色的 next/font 实例；variable 与 CSS 变量一一对应 */
 const fonts = {
-  heading: Playfair_Display({
-    variable: '--font-heading',
-    subsets: ['latin'],
-    display: 'swap',
-  }),
-  body: Open_Sans({
-    variable: '--font-body',
-    subsets: ['latin'],
-    display: 'swap',
-  }),
-  mono: Geist_Mono({
-    variable: '--font-mono',
-    subsets: ['latin'],
-    display: 'swap',
-  }),
+  heading: fontHeading,
+  body: fontBody,
+  mono: fontMono,
 } as const;
 
 /**
