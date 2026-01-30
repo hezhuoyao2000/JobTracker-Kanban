@@ -35,10 +35,17 @@ interface ThemeContextType {
     link: string;
     placeholder: string;
   };
-  /** 主题色 class（边框、分割线等） */
+  /** 主题色 class（边框、分割线、卡片背景等） */
   themeClass: {
     divider: string;
     border: string;
+    borderBg: string;
+    cardBg: string;
+    cardBorder: string;
+    /** 标签容器背景 */
+    tagBg: string;
+    /** 卡片底部阴影（全局配置，见 globals.css --shadow-card） */
+    cardShadow: string;
   };
   /** 字体 class（heading / body / mono） */
   font: {
@@ -96,6 +103,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       themeClass: {
         divider: 'border-[var(--color-theme-divider)]',
         border: 'border-[var(--color-theme-border)]',
+        borderBg: 'bg-[var(--color-theme-border)]',
+        cardBg: 'bg-[var(--color-theme-cardBg)]',
+        cardBorder: 'border-[var(--color-theme-cardBorder)]',
+        tagBg: 'bg-[var(--color-theme-tagBg)]',
+        cardShadow: 'shadow-card-hover',
       },
       font: {
         heading: fontClass.heading,

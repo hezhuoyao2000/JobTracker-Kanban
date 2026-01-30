@@ -34,6 +34,8 @@ export interface Column {
     name: string;
     order: number;
     isDefault: boolean;
+    /** 预留：后续可扩展自定义属性、拖拽 id、排序权重等，便于列可配置、可拖动排序 */
+    customAttributes?: Record<string, unknown>;
 }
 
 export interface BoardData {

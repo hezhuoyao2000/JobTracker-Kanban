@@ -36,13 +36,21 @@ export const themeTokens = {
   /** 背景渐变起/止（当前与背景一致） */
   background: { light: '#f2efe7', dark: '#2b2822' },
   backgroundEnd: { light: '#f2efe7', dark: '#2b2822' },
+
   /** 分割线、边框 */
   divider: { light: '#e1d9c8', dark: '#3d3528' },
   /** 边框（与 divider 可共用，预留细分） */
   border: { light: '#e1d9c8', dark: '#3d3528' },
   /** 强调色（按钮、高亮等） */
   accent: { light: '#8b7355', dark: '#b89968' },
-  // 扩展：cardBg, overlay, ...
+
+  /** 卡片背景 **/
+  cardBg: { light: '#ffffff', dark: '#3d3528' },
+  cardBorder: { light: '#dbd3c2', dark: '#dbd3c2' },
+
+  /** 标签容器背景（地点、链接等标签块）；夜间略亮于卡片，保持暖棕调 */
+  tagBg: { light: '#f5f2eb', dark: '#4a4238' },
+  // 扩展：overlay, ...
 } as const satisfies Record<string, ThemedColor>;
 
 /**

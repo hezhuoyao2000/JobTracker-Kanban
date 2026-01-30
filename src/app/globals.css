@@ -5,6 +5,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /** 卡片底部阴影，供 card 类组件使用 */
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 @theme inline {
@@ -21,9 +23,64 @@
   }
 }
 
+/* 卡片阴影随 data-theme 切换（与 ThemeProvider 一致） */
+[data-theme="dark"] {
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.22);
+}
+
+/* 卡片 hover 时应用全局 card 阴影（与 --shadow-card 配套） */
+.shadow-card-hover:hover {
+  box-shadow: var(--shadow-card);
+}
+
 /* 字体方案定义 */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body), sans-serif;
+}
+
+/* ========== 自定义滚动条（细、契合主题）========== */
+/* 列内纵向：更细，颜色与横向 hover 一致（divider） */
+.scrollbar-thin-y {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-theme-divider) transparent;
+}
+.scrollbar-thin-y::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-thin-y::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin-y::-webkit-scrollbar-thumb {
+  background: var(--color-theme-divider);
+  border-radius: 2px;
+}
+.scrollbar-thin-y::-webkit-scrollbar-thumb:hover,
+.scrollbar-thin-y::-webkit-scrollbar-thumb:active {
+  background: var(--color-theme-divider);
+}
+
+/* 横向：细，未触发时颜色淡，触发/悬停时更明显 */
+.scrollbar-thin-x {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-theme-divider) 40%, transparent) transparent;
+}
+.scrollbar-thin-x:hover,
+.scrollbar-thin-x:focus-within {
+  scrollbar-color: var(--color-theme-divider) transparent;
+}
+.scrollbar-thin-x::-webkit-scrollbar {
+  height: 6px;
+}
+.scrollbar-thin-x::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin-x::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-theme-divider) 40%, transparent);
+  border-radius: 3px;
+}
+.scrollbar-thin-x:hover::-webkit-scrollbar-thumb,
+.scrollbar-thin-x:focus-within::-webkit-scrollbar-thumb {
+  background: var(--color-theme-divider);
 }

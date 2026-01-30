@@ -14,8 +14,8 @@
  */
 
 import {
-  Geist_Mono,
-  Open_Sans,
+  IBM_Plex_Sans,
+  Lora,
   Playfair_Display,
 } from 'next/font/google';
 
@@ -28,12 +28,12 @@ const fontHeading = Playfair_Display({
   subsets: ['latin'],
   display: 'swap',
 });
-const fontBody = Open_Sans({
+const fontBody = Lora({
   variable: '--font-body',
   subsets: ['latin'],
   display: 'swap',
 });
-const fontMono = Geist_Mono({
+const fontMono = IBM_Plex_Sans({
   variable: '--font-mono',
   subsets: ['latin'],
   display: 'swap',
