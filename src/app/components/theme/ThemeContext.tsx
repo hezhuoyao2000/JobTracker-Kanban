@@ -12,42 +12,57 @@ import { fontClass } from './fontTokens';
 
 type Theme = 'light' | 'dark';
 
-/** 基于 colorTokens 的 CSS 变量，背景/字体随 data-theme 切换 */
+/** 页面级样式（背景渐变、默认正文色） */
 const tokenBasedStyles = {
   background:
     'bg-gradient-to-b from-[var(--color-theme-background)] to-[var(--color-theme-backgroundEnd)]',
-  /** 主正文色，兼容旧用法 */
   textPrimary: 'text-[var(--color-text-primary)]',
 };
 
+/**
+ * ThemeContext 提供的样式分类：
+ * - text: 文字颜色（primary/secondary/muted/link/placeholder/button）
+ * - themeClass: 背景、边框、阴影、focus 等（背景用 bg-，边框用 border-）
+ * - font: 字体族（heading/body/mono）
+ */
 interface ThemeContextType {
   theme: Theme;
   toggleTheme: () => void;
-  /** 背景渐变 class（沿用旧名，已改为 token） */
   backgroundClass: string;
-  /** 主正文色 class（沿用旧名，已改为 token） */
   textClass: string;
-  /** 语义化字体色 class，便于扩展 */
+  /** 文字颜色 class */
   text: {
     primary: string;
     secondary: string;
     muted: string;
     link: string;
     placeholder: string;
+    /** 按钮/强调色背景上的文字 */
+    button: string;
   };
-  /** 主题色 class（边框、分割线、卡片背景等） */
+  /** 主题色 class（背景、边框、分割线、focus 等） */
   themeClass: {
     divider: string;
     border: string;
     borderBg: string;
     cardBg: string;
     cardBorder: string;
-    /** 标签容器背景 */
     tagBg: string;
-    /** 卡片底部阴影（全局配置，见 globals.css --shadow-card） */
+    buttonBg: string;
+    /** 强调色背景（选中态等） */
+    accentBg: string;
+    /** 强调色边框、文字（checkbox 勾选等） */
+    accentBorder: string;
+    accentText: string;
+    /** 输入框 focus 环（与 focus:outline-none 配合） */
+    accentFocusRing: string;
+    /** 输入框 placeholder 颜色 */
+    inputPlaceholder: string;
+    /** 弹窗遮罩背景（color-mix 半透明） */
+    overlayBackdrop: string;
     cardShadow: string;
   };
-  /** 字体 class（heading / body / mono） */
+  /** 字体样式 class（heading / body / mono） */
   font: {
     heading: string;
     body: string;
@@ -99,6 +114,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         muted: 'text-[var(--color-text-muted)]',
         link: 'text-[var(--color-text-link)]',
         placeholder: 'text-[var(--color-text-placeholder)]',
+        button: 'text-[var(--color-text-button)]',
       },
       themeClass: {
         divider: 'border-[var(--color-theme-divider)]',
@@ -107,6 +123,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         cardBg: 'bg-[var(--color-theme-cardBg)]',
         cardBorder: 'border-[var(--color-theme-cardBorder)]',
         tagBg: 'bg-[var(--color-theme-tagBg)]',
+        buttonBg: 'bg-[var(--color-theme-buttonBg)]',
+        accentBg: 'bg-[var(--color-theme-accent)]',
+        accentBorder: 'border-[var(--color-theme-accent)]',
+        accentText: 'text-[var(--color-theme-accent)]',
+        accentFocusRing: 'focus:outline-none focus:ring-2 focus:ring-[var(--color-theme-accent)]',
+        inputPlaceholder: 'placeholder:text-[var(--color-text-placeholder)]',
+        overlayBackdrop: 'bg-[color-mix(in_srgb,var(--color-theme-background)_60%,transparent)]',
         cardShadow: 'shadow-card-hover',
       },
       font: {

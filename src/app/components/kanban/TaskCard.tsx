@@ -1,46 +1,85 @@
 'use client';
 
+import { useDraggable } from '@dnd-kit/core';
 import Link from 'next/link';
-import { Box } from '@/components/ui';
 import { JobCard } from '../../services/types/frontendtypes/frontend';
 import { useTheme } from '../theme/ThemeContext';
-import { GripVertical, MapPin, Link as LinkIcon, CircleAlert, MessageCircle  } from 'lucide-react';
+import { useBoardContext } from './context/BoardContext';
+import { GripVertical, MapPin, Link as LinkIcon, CircleAlert, MessageCircle, SquarePen } from 'lucide-react';
 import { Divider } from '@/components/ui/divider';
 
 export interface TaskCardProps {
   card: JobCard;
+  /** 是否是 DragOverlay 中的预览卡片（不需要拖拽功能） */
+  isOverlay?: boolean;
 }
 
 /**
  * 任务卡片组件
- * 根据 card 数据占位渲染，便于在此基础上手写样式。
+ * 
+ * 拖拽说明：
+ * - useDraggable：让这个卡片可以被拖拽
+ * - id：使用 card.id，这样 onDragEnd 的 active.id 就是卡片的 id
+ * - listeners：拖拽事件监听器，绑定到手柄图标上（只有按住手柄才能拖拽）
+ * - isDragging：是否正在被拖拽，原位置卡片变为占位符样式
+ * - isOverlay：如果是 DragOverlay 中的卡片，不需要拖拽功能，显示拖拽中的高亮样式
  */
-export function TaskCard({ card }: TaskCardProps) {
+export function TaskCard({ card, isOverlay = false }: TaskCardProps) {
+  const { openCard } = useBoardContext();
   const { text, font, themeClass } = useTheme();
 
+  // useDraggable：让这个卡片可以被拖拽
+  // isOverlay 的卡片不需要拖拽功能
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
+    id: card.id,
+    disabled: isOverlay,
+  });
+
+  // 根据状态决定样式
+  const getCardClassName = () => {
+    const base = `shrink-0 w-[17rem] min-h-[7.5rem] p-4 rounded-lg border overflow-hidden flex flex-col transition-shadow duration-200 ease-out`;
+    
+    if (isOverlay) {
+      // DragOverlay 中的卡片：高亮样式，始终在最上层
+      return `${base} ${themeClass.cardBg} ${themeClass.cardBorder} shadow-2xl ring-2 ring-blue-400 scale-105`;
+    }
+    
+    if (isDragging) {
+      // 原位置的占位符：半透明虚线边框
+      return `${base} opacity-40 border-dashed border-2 border-gray-400 bg-gray-100`;
+    }
+    
+    // 正常状态
+    return `${base} ${themeClass.cardBg} ${themeClass.cardBorder} ${themeClass.cardShadow} hover:-translate-y-0.5`;
+  };
+
   return (
-    <Box
-      className={`shrink-0 w-[17rem] min-h-[7.5rem] p-4 rounded-lg ${themeClass.cardBg} ${themeClass.cardBorder} border overflow-hidden flex flex-col transition-all duration-200 ease-out hover:-translate-y-0.5 ${themeClass.cardShadow}`}
+    <div
+      ref={isOverlay ? undefined : setNodeRef}
+      className={getCardClassName()}
     >
       <div className="flex-1 min-h-0 overflow-hidden flex flex-col gap-1">
         <div className="flex items-start justify-between gap-2 min-h-0">
           {/* 职位标题 */}
-          <div className={`min-w-0 flex-1 ${font.heading} ${text.primary} text-lg font-bold line-clamp-2 break-words`}>{card.jobTitle || '无标题'}</div>
-          {/* 拖拽手柄 */}
-          <GripVertical className={`w-4 h-4 shrink-0 mt-0.5 ${text.muted}`} aria-hidden />
+          <div className={`min-w-0 flex-1 ${font.heading} ${text.primary} text-lg font-bold line-clamp-2 break-words cursor-pointer hover:underline`} onClick={() => openCard(card.id)}>{card.jobTitle || '无标题'}</div>
+          {/* 拖拽手柄 - listeners 绑定到这里，只有按住手柄才能拖拽 */}
+          <GripVertical
+            {...listeners}
+            {...attributes}
+            className={`w-4 h-4 shrink-0 mt-0.5 ${text.muted} hover:cursor-grab active:cursor-grabbing touch-none`}
+            aria-hidden
+          />
         </div>
         {/* 公司名称 */}
         <div className={`min-w-0 truncate ${font.body} ${text.secondary} text-sm font-semibold`}>{card.companyName || ''}</div>
-
-
 
         {/* 标签容器 */}
         <div className="flex flex-wrap gap-1.5 min-h-0 my-1">
           {/* 工作地点 */}
           {card.jobLocation && (
-            <div className={`flex items-center gap-1 shrink-0 ${themeClass.tagBg} px-2 rounded border ${themeClass.cardBorder}`}>
-              <MapPin size={13} className={`${text.secondary}`} aria-hidden />
-              <span className={`${font.body} font-semibold ${text.secondary} text-sm whitespace-nowrap`}>{card.jobLocation}</span>
+            <div className={`flex items-center gap-1 shrink-0 max-w-[10rem] ${themeClass.tagBg} px-2 rounded border ${themeClass.cardBorder}`}>
+              <MapPin size={13} className={`shrink-0 ${text.secondary}`} aria-hidden />
+              <span className={`${font.body} font-semibold ${text.secondary} text-sm truncate`}>{card.jobLocation}</span>
             </div>
           )}
 
@@ -86,7 +125,12 @@ export function TaskCard({ card }: TaskCardProps) {
             </p>
           </div>
         )}
+        
+        <div className="self-end shrink-0">
+          <SquarePen size={18} className={`${text.secondary} mt-1 hover:cursor-pointer hover:opacity-80`} aria-hidden onClick={() => openCard(card.id)} />
+        </div>
+
       </div>
-    </Box>
+    </div>
   );
 }

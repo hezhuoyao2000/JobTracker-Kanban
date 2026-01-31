@@ -49,3 +49,5 @@ start-claude.bat
 .env.kimi
 .env.xAI
 .cursor/
+.github
+AGENTS.md

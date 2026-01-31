@@ -32,10 +32,10 @@ describe('StorageService 存储与 Date 反序列化', () => {
     StorageService.clearBoard();
   });
 
-  it('本地无数据时 loadBoard 应返回带假数据的看板（仅展示，不写入存储）', () => {
+  it('本地无数据时 loadBoard 应返回空卡片的看板', () => {
     const loaded = StorageService.loadBoard();
     expect(loaded.columns.length).toBe(INITIAL_DATA.columns.length);
-    expect(loaded.cards.length).toBeGreaterThan(0);
+    expect(loaded.cards.length).toBe(0);
   });
 
   it('saveBoard 后 loadBoard 应得到相同结构', () => {

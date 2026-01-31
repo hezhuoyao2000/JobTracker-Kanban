@@ -1,19 +1,18 @@
 # 项目进度跟踪文档
 
 **项目名称：** Job Tracker (求职申请跟踪器)  
-**最后更新：** 2026-01-26  
-**当前阶段：** 数据层与 Hook 已完成，开始 UI 层集成
+**最后更新：** 2026-02-01  
+**当前阶段：** 拖拽完成，待删除确认与交互优化
 
 ---
 
 ## 📊 整体进度概览
 
 ```
-[████████████████░░░░] 75% 完成（数据层 + Hook）
+[███████████████████░] 95% 完成（MVP 卡片操作 + 拖拽闭环）
 
-✅ 已完成：数据模型、业务逻辑、存储层（含 Date 反序列化）、useBoard Hook
-🔄 进行中：UI 组件集成（优先级 3）
-⏳ 待开始：拖拽功能、卡片操作 UI、交互优化
+✅ 已完成：数据层、Hook、BoardContext、看板展示、添加/编辑/删除卡片、空状态、真数据接入、拖拽功能
+⏳ 待开始：删除确认对话框、交互优化（加载/错误/成功反馈）
 ```
 
 ---
@@ -48,38 +47,42 @@
 - [x] `handleMoveCard()` - 移动卡片
 - [x] `handleUpdateCard()` - 更新卡片
 - [x] `handleDeleteCard()` - 删除卡片
-- [x] 文件位置：`src/app/components/kanban/hooks/useBoard.ts`
+- [x] `useDragAndDrop()` - 拖拽逻辑封装（sensors、handleDragStart/End、activeCard）
+- [x] 文件位置：`src/app/components/kanban/hooks/useBoard.ts`、`useDragAndDrop.ts`
+
+### 5. UI 组件层 (95%) — MVP 闭环完成
+- [x] `KanbanBox` - 从 BoardContext 获取 board，动态渲染列
+- [x] `KanbanColumn` - 接收 `column`、`cards`，空状态显示「暂无申请」
+- [x] `TaskCard` - 从 BoardContext 获取 openCard，点击打开编辑
+- [x] `FormEditWindow` - 编辑/新建共用，Save 按钮已修复（form 属性关联）
+- [x] `AddNewButton` - 连接 openCard(null)，打开新建表单
+- [x] **BoardContext** - useBoard 单点调用，消除 props drilling
+- [ ] **待实现：** 删除卡片确认对话框（当前直接删除无二次确认）
+
+### 6. 存储层优化 (100%)
+- [x] StorageService 剔除假数据，无缓存时返回空卡片
+- [x] initialData 仅保留 INITIAL_DATA（列定义 + 空 cards）
+- [x] initialData.ts 中 MOCK_CARDS 等死代码可清理（已不被引用）
+
+### 7. 拖拽功能 (100%)
+- [x] 集成 `@dnd-kit/core` 到 `KanbanBox`
+- [x] 实现卡片拖拽移动
+- [x] 拖拽视觉反馈（原位置占位符 + DragOverlay 高亮）
+- [x] 拖拽后自动保存
+- [x] DragOverlay：拖拽时卡片始终显示在最上层
+- [x] useDragAndDrop Hook：sensors、handleDragStart/handleDragEnd、activeCard 封装
+- [x] openCard(cardId)：拖拽后编辑弹窗 Current status 正确显示新列
 
 ---
-
-## 🔄 进行中模块
-
-### 5. UI 组件层 (20%) — 当前任务
-- [x] `KanbanBox` - 看板容器组件（结构已创建）
-- [x] `KanbanColumn` - 列组件（结构已创建）
-- [x] `TaskCard` - 卡片组件（结构已创建）
-- [ ] **待实现：** 在 `KanbanBox` 中使用 `useBoard`，把 `board` 与操作方法传给子组件
-- [ ] **待实现：** `KanbanColumn` 接收 `column`、`cards` props，动态渲染列名和卡片列表
-- [ ] **待实现：** `TaskCard` 接收 `card` prop，展示职位名、公司名等
-- [ ] **待实现：** 空状态展示（某列无卡片时显示「暂无申请」等）
-
----
-
 ## ⏳ 待开始模块
 
-### 6. 拖拽功能 (0%)
-- [ ] 集成 `@dnd-kit/core` 到 `KanbanBox`
-- [ ] 实现卡片拖拽移动
-- [ ] 拖拽视觉反馈
-- [ ] 拖拽后自动保存
+### 8. 卡片操作 UI 补充 (10%)
+- [x] 添加卡片按钮/表单
+- [x] 编辑卡片弹窗/表单
+- [ ] 删除卡片确认对话框（PRD 要求用户确认后删除）
+- [x] 卡片详情展示（点击卡片打开 FormEditWindow）
 
-### 7. 卡片操作 UI (0%)
-- [ ] 添加卡片按钮/表单
-- [ ] 编辑卡片弹窗/表单
-- [ ] 删除卡片确认对话框
-- [ ] 卡片详情展示
-
-### 8. 交互优化 (0%)
+### 9. 交互优化 (0%)
 - [ ] 加载状态处理
 - [ ] 错误提示
 - [ ] 操作成功反馈
@@ -94,8 +97,8 @@
 
 ---
 
-### 优先级 3：集成 Hook 到 UI（当前任务，预计 1–2 小时）
-**目标：** 让看板能够显示真实数据（先「能看到数据」，再做拖拽和操作 UI）
+### ~~优先级 3：集成 Hook 到 UI~~ ✅ 已完成
+**目标：** 让看板能够显示真实数据
 
 **任务清单：**
 1. 在 `KanbanBox` 中使用 `useBoard` Hook
@@ -165,24 +168,14 @@
 
 ---
 
-### 优先级 4：实现拖拽功能（预计 2-3 小时）
+### ~~优先级 4：实现拖拽功能~~ ✅ 已完成
 **目标：** 实现卡片拖拽移动
 
-**任务清单：**
-1. 在 `KanbanBox` 中配置 `DndContext`
-   - 设置 `onDragEnd` 处理器
-   - 调用 `handleMoveCard` 方法
-2. 为 `TaskCard` 添加拖拽能力
-   - 使用 `useDraggable` Hook
-3. 为 `KanbanColumn` 添加放置区域
-   - 使用 `useDroppable` Hook
-4. 添加拖拽视觉反馈
-   - 拖拽时的样式变化
-   - 放置区域的视觉提示
-
-**思考点：**
-- `@dnd-kit` 的 `id` 如何与我们的 `cardId` 和 `columnId` 对应？
-- 如何防止卡片被拖到无效的列？
+**已实现：**
+- DndContext + useDragAndDrop Hook 封装（`hooks/useDragAndDrop.ts`）
+- TaskCard 使用 useDraggable，KanbanColumn 使用 useDroppable
+- DragOverlay 确保拖拽时卡片始终在最上层
+- 拖拽后 openCard(cardId) 从 board 取最新数据，Current status 正确更新
 
 ---
 
@@ -209,19 +202,67 @@
 
 ---
 
+## 📐 架构指导（2026-02-01 补充）
+
+### 问题 1：opencard 等动作透传靠 props，中间层要层层传递，用 Context 能简化吗？推荐吗？
+
+**能简化。** 将 `onOpenCard`、`handleAddJob`、`handleUpdateCard`、`handleDeleteCard`、`handleMoveCard` 等放入 `BoardContext`，子组件通过 `useBoardContext()` 直接消费，可消除 page → KanbanBox → KanbanColumn → TaskCard 的 props drilling。
+
+**推荐使用 Context，理由：**
+- 看板级操作天然适合 Context（多个层级都需要）
+- 后续拖拽、添加列等会引入更多方法，props 会继续膨胀
+- 符合 React 常见模式（如 ThemeContext）
+- `BoardContext.tsx` 已预留，可直接实现
+
+**注意：** Context 会导致订阅该 Context 的组件在任意 context 值变化时重渲染。可考虑拆成 `BoardDataContext`（board）与 `BoardActionsContext`（方法，引用稳定），或使用 `useMemo` 稳定方法引用。
+
+---
+
+### 问题 2：page 的 useBoard 方法传 vs Box 再次引用 useBoard，选哪个？
+
+**当前存在严重问题：** page 与 KanbanBox **都**调用了 `useBoard()`。`useBoard` 内部用 `useState`，每次调用都是独立状态，导致：
+- page 的 `board` 与 KanbanBox 的 `board` 是两份不同数据
+- FormEditWindow 调用 `handleUpdateCard` 只更新 page 的 board，KanbanBox 的 board 不会同步
+- 反之亦然
+
+**正确做法：只在一个地方调用 `useBoard()`**，然后通过 props 或 Context 共享。
+
+**推荐方案：BoardContext 统一管理**
+- 在 `BoardProvider` 中调用一次 `useBoard()`
+- 将 `board` 及所有方法放入 Context
+- page、KanbanBox、FormEditWindow、AddNewButton 等均从 Context 消费
+- 这样既解决数据重复问题，也消除 props drilling
+
+**不推荐：** KanbanBox 再次调用 useBoard。会导致数据源分裂，难以维护。
+
+---
+
+### 问题 3：下一步架构建议
+
+1. **实现 BoardContext**：`BoardProvider` 内调用 `useBoard()`，提供 `board`、`handleAddJob`、`handleUpdateCard`、`handleDeleteCard`、`handleMoveCard`，以及 `openCard(card?)`、`closeCard()` 等 UI 状态（或继续由 page 管理 FormEditWindow 的开关，仅把 board 方法放入 Context）
+2. **移除重复调用**：page 与 KanbanBox 不再直接调用 `useBoard()`，改为 `useBoardContext()`
+3. **连接 AddNewButton**：通过 Context 的 `openCard(null)` 或类似方式打开「添加新卡片」表单
+
+---
+
 ## 📝 技术债务与注意事项
 
-1. **组件未集成**
-   - 当前：UI 组件是静态的，没有使用真实数据
-   - 影响：无法看到实际效果
-   - 优先级：高（本阶段解决）
+1. **删除无确认**
+   - 当前：FormEditWindow 中删除按钮直接调用 handleDelete，无二次确认
+   - PRD 要求：用户确认后可永久删除
+   - 优先级：中
 
-2. **错误处理**
+2. **initialData 死代码**
+   - 当前：MOCK_CARDS、getBoardWithMockCards、MOCK_CARD_IDS 已不被引用
+   - 建议：清理以保持代码整洁
+   - 优先级：低
+
+3. **错误处理**
    - 当前：StorageService 有 try-catch，但 UI 层没有错误提示
    - 影响：用户操作失败时无反馈
    - 优先级：中
 
-3. **类型安全**
+4. **类型安全**
    - 当前：大部分类型已定义，组件 props 需在本阶段补齐
    - 影响：开发时类型提示更完整
    - 优先级：中
@@ -259,9 +300,24 @@
 **当前建议：**
 1. ~~完善 `useBoard` Hook~~ ✅
 2. ~~修复 Date 序列化~~ ✅
-3. **集成 Hook 到 UI（优先级 3）** ← 当前
-4. 实现拖拽（优先级 4）
-5. 添加操作 UI（优先级 5）
+3. ~~集成 Hook 到 UI（优先级 3）~~ ✅
+4. ~~BoardContext + useBoard 单点调用~~ ✅
+5. ~~AddNewButton + 空状态 + FormEditWindow Save 修复~~ ✅
+6. ~~实现拖拽（优先级 4）~~ ✅
+7. **删除确认对话框**（PRD 要求用户确认后删除） ← 当前
+8. 交互优化（加载/错误/成功提示）
+
+---
+
+### 📋 接下来未完成任务清单
+
+| 优先级 | 任务 | 状态 |
+|--------|------|------|
+| ~~高~~ | ~~拖拽功能（@dnd-kit 集成）~~ | ✅ 已完成 |
+| 中 | 删除卡片确认对话框 | ⏳ 待开始 |
+| 中 | 交互优化（错误提示、成功反馈） | ⏳ 待开始 |
+| 低 | initialData.ts 死代码清理（MOCK_CARDS 等） | ⏳ 可选 |
+| 低 | 列排序、自定义列（PRD 非 MVP） | ⏳ 后期 |
 
 **为什么先做 UI 集成？**
 - 先让「数据 → 视图」这条链路跑通，能看到真实列和卡片。
@@ -273,7 +329,9 @@
 
 - **2026-01-26**：业务逻辑层、存储层（含 Date 反序列化）、useBoard Hook 完成
 - **2026-01-26**：开始 UI 层集成（优先级 3）
-- 待补充...
+- **2026-02-01**：KanbanBox/KanbanColumn/TaskCard 接上真实数据；FormEditWindow 编辑/删除完成；AddNewButton 组件创建；进度文档更新，补充架构指导
+- **2026-02-01**：BoardContext 完整接入；AddNewButton 连接 openCard(null)；空状态「暂无申请」；FormEditWindow Save 修复（form 属性 + formInstanceId）；StorageService 剔除假数据；MVP 卡片增删改查闭环完成
+- **2026-02-01**：拖拽完成；useDragAndDrop Hook 封装；DragOverlay 确保拖拽卡片在最上层；openCard(cardId) 修复拖拽后 Current status 显示
 
 ---
 

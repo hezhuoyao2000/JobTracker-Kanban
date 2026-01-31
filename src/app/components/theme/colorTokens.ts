@@ -1,14 +1,14 @@
 /**
- * 主题颜色与字体颜色 Token
- * 唯一数据源，所有 UI 色彩由此派生。
+ * 主题颜色 Token（唯一数据源）
  *
- * ## 以后怎么扩展
- * 1. 字体色：在 textTokens 里加新键（如 error、success），给出 light / dark 的 hex。
- * 2. 主题色：在 themeTokens 里加新键（如 cardBg、overlay），同上。
- * 3. ThemeContext 的 text / themeClass 若用了新键，需在 ThemeContext 里追加对应 class
- *    （如 text.error、themeClass.cardBg），否则组件直接用 style={{ color: getTextColor('error', theme) }} 或
- *    className="text-[var(--color-text-error)]" 即可（变量由 buildThemeVarsCss 自动生成）。
- * 4. 改已有色值：只改本文件里的 hex，无需动别处。
+ * 所有 UI 色彩由此派生，buildThemeVarsCss 会生成 --color-text-* 与 --color-theme-* CSS 变量。
+ * ThemeProvider 将变量注入到 :root / [data-theme="light"] / [data-theme="dark"]，
+ * 切换主题时通过 data-theme 切换生效的变量组。
+ *
+ * ## 扩展流程
+ * 1. 在 textTokens（文字色）或 themeTokens（背景/边框等）中加新键，给出 light/dark hex
+ * 2. 在 ThemeContext 的 text 或 themeClass 中补全对应 class（便于组件统一引用）
+ * 3. 组件通过 useTheme() 使用 themeClass.xxx / text.xxx
  */
 
 export type ThemeMode = 'light' | 'dark';
@@ -28,29 +28,32 @@ export const textTokens = {
   link: { light: '#2d6a9f', dark: '#6ba3d0' },
   /** 占位符（可后续与 muted 合并或细分） */
   placeholder: { light: '#a39b8f', dark: '#7a7268' },
-  // 扩展示例：error, success, warning, inverse ...
+  /** 按钮/强调色背景上的文字色（需保证与 accent 对比度） */
+  button: { light: '#e8e2da', dark: '#1a1512' },
 } as const satisfies Record<string, ThemedColor>;
 
 /** 主题色 Token（背景、边框、分割线等） */
 export const themeTokens = {
-  /** 背景渐变起/止（当前与背景一致） */
+  /** 页面背景渐变起/止 */
   background: { light: '#f2efe7', dark: '#2b2822' },
   backgroundEnd: { light: '#f2efe7', dark: '#2b2822' },
 
   /** 分割线、边框 */
   divider: { light: '#e1d9c8', dark: '#3d3528' },
-  /** 边框（与 divider 可共用，预留细分） */
   border: { light: '#e1d9c8', dark: '#3d3528' },
-  /** 强调色（按钮、高亮等） */
+
+  /** 强调色（选中态、focus ring、checkbox 等） */
   accent: { light: '#8b7355', dark: '#b89968' },
 
-  /** 卡片背景 **/
+  /** 卡片背景 */
   cardBg: { light: '#ffffff', dark: '#3d3528' },
+  /** 卡片/标签边框 */
   cardBorder: { light: '#dbd3c2', dark: '#dbd3c2' },
 
-  /** 标签容器背景（地点、链接等标签块）；夜间略亮于卡片，保持暖棕调 */
+  /** 标签/输入框等浅背景块（与 buttonBg 区分：tag 更柔和） */
   tagBg: { light: '#f5f2eb', dark: '#4a4238' },
-  // 扩展：overlay, ...
+  /** 主按钮背景 */
+  buttonBg: { light: '#8b7355', dark: '#b89968' },
 } as const satisfies Record<string, ThemedColor>;
 
 /**

@@ -6,6 +6,7 @@ import '@/src/app/globals.css';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { ThemeProvider } from '@/src/app/components/theme/ThemeContext';
 import { fontVariableClassNames } from '@/src/app/components/theme/fontTokens';
+import { BoardProvider } from "./components/kanban/context/BoardContext";
 
 export const metadata: Metadata = {
   title: "Job Tracker",
@@ -24,7 +25,9 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <GluestackUIProvider mode="light">
-            {children}
+            <BoardProvider>
+              {children}
+            </BoardProvider>
           </GluestackUIProvider>
         </ThemeProvider>
         <ToastContainer
