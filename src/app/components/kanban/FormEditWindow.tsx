@@ -104,7 +104,7 @@ export function FormEditWindow() {
       className={`fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200 ${themeClass.overlayBackdrop}`}
     >
       <div
-        className={`w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col rounded-3xl shadow-2xl animate-in zoom-in-95 duration-200 ${themeClass.cardBg} border ${themeClass.cardBorder}`}
+        className={`w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col rounded-3xl shadow-2xl animate-in zoom-in-95 duration-200 ${themeClass.cardBg} border ${themeClass.cardBorder}`}
       >
         {/* Header */}
         <div
@@ -142,7 +142,7 @@ export function FormEditWindow() {
         <form
           id="job-edit-form"
           onSubmit={handleSubmit}
-          className="flex-grow overflow-y-auto p-6 space-y-6 custom-scrollbar"
+          className="flex-grow overflow-y-auto p-6 space-y-6 scrollbar-thin-y"
         >
           {/* Main Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -155,7 +155,7 @@ export function FormEditWindow() {
               <input
                 required
                 type="text"
-                className={`w-full px-4 py-2.5 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} transition-all`}
+                className={`w-full px-4 py-2.5 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} transition-all scrollbar-thin-y`}
                 placeholder="e.g. Frontend Engineer"
                 value={formData.jobTitle ?? ''}
                 onChange={(e) =>
@@ -172,7 +172,7 @@ export function FormEditWindow() {
               <input
                 required
                 type="text"
-                className={`w-full px-4 py-2.5 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} transition-all`}
+                className={`w-full px-4 py-2.5 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} transition-all scrollbar-thin-y`}
                 placeholder="e.g. XXX Technology"
                 value={formData.companyName ?? ''}
                 onChange={(e) =>
@@ -223,7 +223,7 @@ export function FormEditWindow() {
               </label>
               <input
                 type="text"
-                className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing}`}
+                className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} scrollbar-thin-y`}
                 placeholder="e.g. Auckland / Remote"
                 value={formData.jobLocation ?? ''}
                 onChange={(e) =>
@@ -239,7 +239,7 @@ export function FormEditWindow() {
               </label>
               <input
                 type="url"
-                className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing}`}
+                className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} scrollbar-thin-y`}
                 placeholder="https://..."
                 value={formData.jobLink ?? ''}
                 onChange={(e) =>
@@ -262,7 +262,7 @@ export function FormEditWindow() {
                 type="date"
                 aria-label="Application date"
                 title="Application date"
-                className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.accentFocusRing}`}
+                className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.accentFocusRing} scrollbar-thin-y`}
                 value={formatDateForInput(
                   typeof formData.appliedTime === 'string'
                     ? new Date(formData.appliedTime)
@@ -286,7 +286,7 @@ export function FormEditWindow() {
               </label>
               <input
                 type="text"
-                className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing}`}
+                className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} scrollbar-thin-y`}
                 placeholder="e.g. HR name, email, etc."
                 value={formData.extra?.contactInfo ?? ''}
                 onChange={(e) =>
@@ -310,7 +310,7 @@ export function FormEditWindow() {
               {formData.tags?.map((tag) => (
                 <span
                   key={tag}
-                  className={`flex items-center gap-1 ${themeClass.tagBg} ${text.primary} text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wider border ${themeClass.cardBorder}`}
+                  className={`flex items-center gap-1 ${themeClass.tagBg} ${text.primary} text-xs font-bold px-2 py-1 rounded-lg uppercase tracking-wider border ${themeClass.cardBorder}`}
                 >
                   {tag}
                   <button
@@ -327,7 +327,7 @@ export function FormEditWindow() {
             <div className="flex gap-2">
               <input
                 type="text"
-                className={`flex-grow px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing}`}
+                className={`flex-grow px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} scrollbar-thin-y`}
                 placeholder="Enter and press Enter to add tag"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
@@ -353,7 +353,7 @@ export function FormEditWindow() {
               <Info size={12} /> Job description
             </label>
             <textarea
-              className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm min-h-[100px] ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing}`}
+              className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm min-h-[100px] ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} scrollbar-thin-y`}
               placeholder="Paste job description or key requirements..."
               value={formData.description ?? ''}
               onChange={(e) =>
@@ -369,7 +369,7 @@ export function FormEditWindow() {
               <MessageSquare size={12} /> Personal notes
             </label>
             <textarea
-              className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm min-h-[100px] ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing}`}
+              className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm min-h-[100px] ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} scrollbar-thin-y`}
               placeholder="Your preparation, interview notes, etc..."
               value={formData.comments ?? ''}
               onChange={(e) =>

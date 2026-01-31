@@ -25,7 +25,7 @@ export interface TaskCardProps {
  * - isOverlay：如果是 DragOverlay 中的卡片，不需要拖拽功能，显示拖拽中的高亮样式
  */
 export function TaskCard({ card, isOverlay = false }: TaskCardProps) {
-  const { openCard } = useBoardContext();
+  const { openCard, openPreview } = useBoardContext();
   const { text, font, themeClass } = useTheme();
 
   // useDraggable：让这个卡片可以被拖拽
@@ -61,14 +61,23 @@ export function TaskCard({ card, isOverlay = false }: TaskCardProps) {
       <div className="flex-1 min-h-0 overflow-hidden flex flex-col gap-1">
         <div className="flex items-start justify-between gap-2 min-h-0">
           {/* 职位标题 */}
-          <div className={`min-w-0 flex-1 ${font.heading} ${text.primary} text-lg font-bold line-clamp-2 break-words cursor-pointer hover:underline`} onClick={() => openCard(card.id)}>{card.jobTitle || '无标题'}</div>
+          <div
+            className={`min-w-0 flex-1 ${font.heading} ${text.primary} text-lg font-bold line-clamp-2 break-words ${
+              isOverlay ? '' : 'cursor-pointer hover:underline'
+            }`}
+            onClick={isOverlay ? undefined : () => openPreview(card.id)}
+          >
+            {card.jobTitle || '无标题'}
+          </div>
           {/* 拖拽手柄 - listeners 绑定到这里，只有按住手柄才能拖拽 */}
-          <GripVertical
-            {...listeners}
-            {...attributes}
-            className={`w-4 h-4 shrink-0 mt-0.5 ${text.muted} hover:cursor-grab active:cursor-grabbing touch-none`}
-            aria-hidden
-          />
+          {!isOverlay && (
+            <GripVertical
+              {...listeners}
+              {...attributes}
+              className={`w-4 h-4 shrink-0 mt-0.5 ${text.muted} hover:cursor-grab active:cursor-grabbing touch-none`}
+              aria-hidden
+            />
+          )}
         </div>
         {/* 公司名称 */}
         <div className={`min-w-0 truncate ${font.body} ${text.secondary} text-sm font-semibold`}>{card.companyName || ''}</div>
@@ -127,7 +136,14 @@ export function TaskCard({ card, isOverlay = false }: TaskCardProps) {
         )}
         
         <div className="self-end shrink-0">
-          <SquarePen size={18} className={`${text.secondary} mt-1 hover:cursor-pointer hover:opacity-80`} aria-hidden onClick={() => openCard(card.id)} />
+          <SquarePen
+            size={18}
+            className={`${text.secondary} mt-1 ${
+              isOverlay ? '' : 'hover:cursor-pointer hover:opacity-80'
+            }`}
+            aria-hidden
+            onClick={isOverlay ? undefined : () => openCard(card.id)}
+          />
         </div>
 
       </div>

@@ -35,11 +35,16 @@ export interface BoardContextValue {
   selectedCard: JobCard | null;
   /** 每次 openCard 时递增，用作 FormEditWindow 的 key 以强制重新挂载 */
   formInstanceId: number;
+  isPreviewOpen: boolean;
+  previewCard: JobCard | null;
 
   // 弹窗操作
   /** 传入 cardId 打开编辑弹窗（null 表示新建卡片） */
   openCard: (cardId: string | null) => void;
   closeCard: () => void;
+  /** 传入 cardId 打开只读预览弹窗 */
+  openPreview: (cardId: string) => void;
+  closePreview: () => void;
   // 表单提交 （内部会调用update/add + closeCard）
   handleSave: (data: Partial<JobCard>) => void;
   handleDelete: (id: string) => void;
@@ -62,6 +67,8 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
   const [isCardOpen, setIsCardOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState<JobCard | null>(null);
   const [formInstanceId, setFormInstanceId] = useState(0);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [previewCard, setPreviewCard] = useState<JobCard | null>(null);
 
   // openCard：每次打开都递增 formInstanceId，确保 FormEditWindow 重新挂载
   // 使用 cardId 从最新的 board.cards 中查找卡片，避免使用可能过时的引用
@@ -75,6 +82,20 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
   const closeCard = useCallback(() => {
     setIsCardOpen(false);
     setSelectedCard(null);
+  }, []);
+
+  const openPreview = useCallback(
+    (cardId: string) => {
+      const card = board.cards.find((c) => c.id === cardId) ?? null;
+      setPreviewCard(card);
+      setIsPreviewOpen(true);
+    },
+    [board.cards]
+  );
+
+  const closePreview = useCallback(() => {
+    setIsPreviewOpen(false);
+    setPreviewCard(null);
   }, []);
 
   // handleSave 依赖 selectedCard、board.columns 等，必须正确声明 deps
@@ -120,8 +141,12 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
       isCardOpen,
       selectedCard,
       formInstanceId,
+      isPreviewOpen,
+      previewCard,
       openCard,
       closeCard,
+      openPreview,
+      closePreview,
       handleSave,
       handleDelete,
     }),
@@ -134,8 +159,12 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
       isCardOpen,
       selectedCard,
       formInstanceId,
+      isPreviewOpen,
+      previewCard,
       openCard,
       closeCard,
+      openPreview,
+      closePreview,
       handleSave,
       handleDelete,
     ]

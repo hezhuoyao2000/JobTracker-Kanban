@@ -2,6 +2,7 @@
 
 import { KanbanBox } from './components/kanban/KanbanBox';
 import { FormEditWindow } from './components/kanban/FormEditWindow';
+import { PreviewWindow } from './components/kanban/PreviewWindow';
 import { useBoardContext } from './components/kanban/context/BoardContext';
 import { useTheme } from './components/theme/ThemeContext';
 import { ThemeSwitch } from './components/theme/ThemeSwitch';
@@ -29,6 +30,7 @@ export default function Home() {
         <Divider orientation="horizontal" className={`shrink-0 border ${themeClass.divider}`} />
         <KanbanBox />
         <FormEditWindow key={formInstanceId} />
+        <PreviewWindow />
       </div>
     </div>
   );
