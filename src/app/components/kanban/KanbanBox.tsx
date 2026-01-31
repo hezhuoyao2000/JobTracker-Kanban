@@ -39,11 +39,11 @@ export function KanbanBox() {
         </div>
         {/* 左右内侧淡淡灰黑色阴影，形成过渡遮蔽被隐藏的列（业界常见的边缘渐变阴影） */}
         <div
-          className="absolute left-0 top-0 bottom-0 w-8 pointer-events-none z-10 rounded-l-3xl bg-gradient-to-r from-black/[0.08] to-transparent"
+          className="absolute left-0 top-0 bottom-0 w-4 pointer-events-none z-10 rounded-l-3xl bg-gradient-to-r from-black/[0.05] to-transparent"
           aria-hidden
         />
         <div
-          className="absolute right-0 top-0 bottom-0 w-8 pointer-events-none z-10 rounded-r-3xl bg-gradient-to-l from-black/[0.08] to-transparent"
+          className="absolute right-0 top-0 bottom-0 w-4 pointer-events-none z-10 rounded-r-3xl bg-gradient-to-l from-black/[0.05] to-transparent"
           aria-hidden
         />
       </div>
