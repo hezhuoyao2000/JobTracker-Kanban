@@ -1,13 +1,20 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {BoardData, JobCard} from '../../../services/types/frontendtypes/frontend';
 import {BoardService} from '../services/BoardService';
 import {StorageService} from '../services/StorageService';
+import {INITIAL_DATA} from '../services/initialData';
 
 export const useBoard = () => {
-    // 1. 初始化：从本地读取（使用懒初始化避免在 effect 中同步设置状态）
-    const [board, setBoard] = useState<BoardData>(() => StorageService.loadBoard());
+    // 1. 初始化：使用常量确保 SSR 与客户端首次渲染一致，避免 hydration mismatch
+    const [board, setBoard] = useState<BoardData>(() => ({...INITIAL_DATA}));
 
-    // 2. 封装 Service 动作
+    // 2. 仅在客户端挂载后从 localStorage 加载（localStorage 仅存在于浏览器）
+    // 使用 queueMicrotask 延迟 setState，避免在 effect 内同步触发导致 cascading renders
+    useEffect(() => {
+        queueMicrotask(() => setBoard(StorageService.loadBoard()));
+    }, []);
+
+    // 3. 封装 Service 动作
 
     // 添加一张卡片
     const handleAddJob = (

@@ -12,6 +12,7 @@ const nextConfig = {
   experimental: {
     turbo: undefined, // 禁用 Turbopack
   },
+  productionBrowserSourceMaps: false,
 };
 
 export default withGluestackUI(nextConfig);
