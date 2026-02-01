@@ -19,13 +19,19 @@ export interface KanbanColumnProps {
  * - isOver：当有卡片悬停在此列上时为 true，用于视觉反馈
  */
 export function KanbanColumn({ column, cards }: KanbanColumnProps) {
-  const { text, font, themeClass } = useTheme();
+  const { text, font, themeClass, theme } = useTheme();
 
   // useDroppable：让这个列成为可放置区域
   // id 是 column.id，onDragEnd 时 over.id 就是这个值
   const { setNodeRef, isOver } = useDroppable({
     id: column.id,
   });
+
+  // 拖拽悬停时的半透明白色指示，与主题和谐
+  const isOverStyles =
+    theme === 'light'
+      ? 'bg-white/25 ring-2 ring-white/50'
+      : 'bg-white/12 ring-2 ring-white/30';
 
   return (
     <div className="flex flex-col min-h-0 gap-4 w-[19.5rem] shrink-0 px-3 py-4">
@@ -34,7 +40,7 @@ export function KanbanColumn({ column, cards }: KanbanColumnProps) {
         <h3 className={`shrink-0 ${font.heading} ${text.primary} text-lg font-bold pl-3`}>
           {column.name}
         </h3>
-        
+
         {/* 卡片数量 */}
         <span
           className={`shrink-0 min-w-[1.5rem] px-2 py-0.5 rounded-full text-center text-sm font-bold ${font.mono} ${text.secondary} ${themeClass.borderBg}`}
@@ -47,14 +53,21 @@ export function KanbanColumn({ column, cards }: KanbanColumnProps) {
       <div
         ref={setNodeRef}
         className={`column-cards-scroll scrollbar-thin-y flex flex-col justify-start items-center gap-2 flex-1 min-h-0 w-[18rem] overflow-y-auto pt-1 rounded-xl transition-colors duration-200 ${
-          isOver ? 'bg-blue-100/50 ring-2 ring-blue-400/50' : ''
+          isOver ? isOverStyles : ''
         }`}
         data-container="column-cards-scroll"
         aria-label={`cards`}
       >
         {cards.length === 0 ? (
-          <div className={`flex-1 flex items-center justify-center py-8 ${text.muted}`}>
-            <span className="text-sm">暂无申请</span>
+          <div
+            className={`flex flex-col items-center justify-start gap-2 flex-1 w-full min-h-[5rem] pt-1`}
+          >
+            {/* 列头部虚线框占位，提示可放置卡片 */}
+            <div
+              className={`w-full min-h-[8rem] rounded-lg border-2 border-dashed ${themeClass.border} flex items-center justify-center ${text.muted}`}
+            >
+              <span className="text-sm">Drop card here</span>
+            </div>
           </div>
         ) : (
           cards.map((card) => <TaskCard key={card.id} card={card} />)
