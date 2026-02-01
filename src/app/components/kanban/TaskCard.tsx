@@ -101,7 +101,7 @@ export function TaskCard({ card, isOverlay = false }: TaskCardProps) {
               className={`flex items-center gap-1 shrink-0 px-2 rounded border ${themeClass.cardBorder} ${themeClass.tagBg} hover:opacity-90 ${text.link}`}
             >
               <LinkIcon size={13} className="shrink-0" aria-hidden />
-              <span className={`${font.body} font-medium text-sm whitespace-nowrap truncate max-w-[8rem]`}>From {card.sourcePlatform}</span>
+              <span className={`${font.body} font-medium text-sm whitespace-nowrap truncate max-w-[8rem]`}>{card.sourcePlatform || 'Link'}</span>
             </Link>
           )}
 

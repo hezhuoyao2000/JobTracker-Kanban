@@ -17,6 +17,7 @@ import { JobCard } from '../../services/types/frontendtypes/frontend';
 import { Column } from '../../services/types/frontendtypes/frontend';
 import { useTheme } from '../theme/ThemeContext';
 import { useBoardContext } from './context/BoardContext';
+import { useSourcePlatform } from './hooks/useSourcePlatform';
 
 const formatDateForInput = (d?: Date | null): string => {
   if (!d) return '';
@@ -60,10 +61,20 @@ export function FormEditWindow() {
   const columns = board.columns;
 
   const { text, font, themeClass } = useTheme();
-  const [formData, setFormData] = useState<Partial<JobCard>>(() =>
-    buildInitialFormData(card, columns)
-  );
+  const initForm = buildInitialFormData(card, columns);
+  const [formData, setFormData] = useState<Partial<JobCard>>(() => initForm);
   const [tagInput, setTagInput] = useState('');
+
+  // Position link source platform selection
+  const {
+    platformOption,
+    customSourceInput,
+    handlePlatformOptionChange,
+    handleCustomSourceChange,
+    options: linkSourceOptions,
+  } = useSourcePlatform(initForm.sourcePlatform, (source) =>
+    setFormData((prev) => ({ ...prev, sourcePlatform: source }))
+  );
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -237,15 +248,43 @@ export function FormEditWindow() {
               >
                 <LinkIcon size={12} /> Position link
               </label>
-              <input
-                type="url"
-                className={`w-full px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} scrollbar-thin-y`}
-                placeholder="https://..."
-                value={formData.jobLink ?? ''}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, jobLink: e.target.value }))
-                }
-              />
+              {/* Position link source platform selection */}
+              <div className="flex gap-2 items-stretch">
+                <select
+                  className={`w-1/5 min-w-[5rem] px-3 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.accentFocusRing} cursor-pointer`}
+                  value={platformOption}
+                  onChange={(e) =>
+                    handlePlatformOptionChange(e.target.value)
+                  }
+                  aria-label="Link source platform"
+                >
+                  {linkSourceOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                {platformOption === 'custom' && (
+                  <input
+                    type="text"
+                    className={`w-1/5 min-w-[5rem] px-3 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} scrollbar-thin-y`}
+                    placeholder="Enter source"
+                    value={customSourceInput}
+                    onChange={(e) =>
+                      handleCustomSourceChange(e.target.value)
+                    }
+                  />
+                )}
+                <input
+                  type="url"
+                  className={`flex-1 min-w-0 px-4 py-2 rounded-xl border ${themeClass.border} ${themeClass.tagBg} ${text.primary} text-sm ${themeClass.inputPlaceholder} ${themeClass.accentFocusRing} scrollbar-thin-y`}
+                  placeholder="https://..."
+                  value={formData.jobLink ?? ''}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, jobLink: e.target.value }))
+                  }
+                />
+              </div>
             </div>
           </div>
 
