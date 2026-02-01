@@ -1,17 +1,17 @@
 # 项目进度跟踪文档
 
-**项目名称：** Job Tracker (求职申请跟踪器)  
-**最后更新：** 2026-02-01  
-**当前阶段：** 拖拽完成，待删除确认与交互优化
+**项目名称：** Job Tracker (求职申请跟踪器)
+**最后更新：** 2026-02-01
+**当前阶段：** UI增强完成，待删除确认与交互优化
 
 ---
 
 ## 📊 整体进度概览
 
 ```
-[███████████████████░] 95% 完成（MVP 卡片操作 + 拖拽闭环）
+[████████████████████] 96% 完成（MVP 核心功能 + UI增强）
 
-✅ 已完成：数据层、Hook、BoardContext、看板展示、添加/编辑/删除卡片、空状态、真数据接入、拖拽功能
+✅ 已完成：数据层、Hook、BoardContext、看板展示、添加/编辑/删除卡片、空状态、真数据接入、拖拽功能、动态悬停样式、改进空状态指示
 ⏳ 待开始：删除确认对话框、交互优化（加载/错误/成功反馈）
 ```
 
@@ -50,13 +50,15 @@
 - [x] `useDragAndDrop()` - 拖拽逻辑封装（sensors、handleDragStart/End、activeCard）
 - [x] 文件位置：`src/app/components/kanban/hooks/useBoard.ts`、`useDragAndDrop.ts`
 
-### 5. UI 组件层 (95%) — MVP 闭环完成
-- [x] `KanbanBox` - 从 BoardContext 获取 board，动态渲染列
-- [x] `KanbanColumn` - 接收 `column`、`cards`，空状态显示「暂无申请」
-- [x] `TaskCard` - 从 BoardContext 获取 openCard，点击打开编辑
-- [x] `FormEditWindow` - 编辑/新建共用，Save 按钮已修复（form 属性关联）
+### 5. UI 组件层 (96%) — MVP 闭环 + UI 增强
+- [x] `KanbanBox` - 从 BoardContext 获取 board，动态渲染列，调整渐变阴影宽度和透明度
+- [x] `KanbanColumn` - 接收 `column`、`cards`，动态悬停样式，改进空状态指示，显示卡片数量
+- [x] `TaskCard` - 从 BoardContext 获取 openCard，点击打开编辑，改进显示
+- [x] `FormEditWindow` - 编辑/新建共用，添加来源平台选择功能，Save 按钮已修复（form 属性关联）
 - [x] `AddNewButton` - 连接 openCard(null)，打开新建表单
+- [x] `PreviewWindow` - 预览窗口组件，增强UI体验
 - [x] **BoardContext** - useBoard 单点调用，消除 props drilling
+- [x] **useSourcePlatform Hook** - 管理职位来源平台选择逻辑
 - [ ] **待实现：** 删除卡片确认对话框（当前直接删除无二次确认）
 
 ### 6. 存储层优化 (100%)
@@ -76,9 +78,9 @@
 ---
 ## ⏳ 待开始模块
 
-### 8. 卡片操作 UI 补充 (10%)
+### 8. 卡片操作 UI 补充 (5%)
 - [x] 添加卡片按钮/表单
-- [x] 编辑卡片弹窗/表单
+- [x] 编辑卡片弹窗/表单（已增强来源平台选择功能）
 - [ ] 删除卡片确认对话框（PRD 要求用户确认后删除）
 - [x] 卡片详情展示（点击卡片打开 FormEditWindow）
 
@@ -304,8 +306,9 @@
 4. ~~BoardContext + useBoard 单点调用~~ ✅
 5. ~~AddNewButton + 空状态 + FormEditWindow Save 修复~~ ✅
 6. ~~实现拖拽（优先级 4）~~ ✅
-7. **删除确认对话框**（PRD 要求用户确认后删除） ← 当前
-8. 交互优化（加载/错误/成功提示）
+7. ~~UI 增强（动态悬停样式、来源平台选择、预览窗口等）~~ ✅
+8. **删除确认对话框**（PRD 要求用户确认后删除） ← 当前
+9. 交互优化（加载/错误/成功提示）
 
 ---
 
@@ -314,6 +317,7 @@
 | 优先级 | 任务 | 状态 |
 |--------|------|------|
 | ~~高~~ | ~~拖拽功能（@dnd-kit 集成）~~ | ✅ 已完成 |
+| ~~中~~ | ~~UI 增强（动态悬停样式、来源平台选择、预览窗口等）~~ | ✅ 已完成 |
 | 中 | 删除卡片确认对话框 | ⏳ 待开始 |
 | 中 | 交互优化（错误提示、成功反馈） | ⏳ 待开始 |
 | 低 | initialData.ts 死代码清理（MOCK_CARDS 等） | ⏳ 可选 |
@@ -332,6 +336,7 @@
 - **2026-02-01**：KanbanBox/KanbanColumn/TaskCard 接上真实数据；FormEditWindow 编辑/删除完成；AddNewButton 组件创建；进度文档更新，补充架构指导
 - **2026-02-01**：BoardContext 完整接入；AddNewButton 连接 openCard(null)；空状态「暂无申请」；FormEditWindow Save 修复（form 属性 + formInstanceId）；StorageService 剔除假数据；MVP 卡片增删改查闭环完成
 - **2026-02-01**：拖拽完成；useDragAndDrop Hook 封装；DragOverlay 确保拖拽卡片在最上层；openCard(cardId) 修复拖拽后 Current status 显示
+- **2026-02-01**：UI 增强完成；KanbanColumn 动态悬停样式与改进空状态指示；FormEditWindow 添加来源平台选择；TaskCard 显示优化；PreviewWindow 组件添加
 
 ---
 
