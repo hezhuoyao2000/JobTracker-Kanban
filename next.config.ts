@@ -1,6 +1,7 @@
 import { withGluestackUI } from '@gluestack/ui-next-adapter';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export', // 静态导出，供 GitHub Pages 使用（out 目录）
   eslint: {
     ignoreDuringBuilds: true,
   },

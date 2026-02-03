@@ -49,5 +49,5 @@ start-claude.bat
 .env.kimi
 .env.xAI
 .cursor/
-.github
+.github/copilot-instructions.md
 AGENTS.md
