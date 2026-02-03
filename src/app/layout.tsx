@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Analytics } from '@vercel/analytics/next';
 
 import '@/src/app/globals.css';
 import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
@@ -42,6 +43,7 @@ export default function RootLayout({
           pauseOnHover
           theme="light"
         />
+        <Analytics />
       </body>
     </html>
   );
