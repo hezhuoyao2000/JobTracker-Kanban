@@ -53,9 +53,16 @@ export function boardFromApi(dto: BoardDto): Board {
     return parseIsoToDates<Board>(dto, BOARD_DATE_KEYS);
 }
 
-/** Column 前后端结构一致，无日期字段，直接透传 */
+/** Column：后端 sortOrder → 前端 order（字段名映射） */
 export function columnFromApi(dto: ColumnDto): Column {
-    return { ...dto };
+    return {
+        id: dto.id,
+        boardId: dto.boardId,
+        name: dto.name,
+        order: dto.sortOrder,           // sortOrder → order
+        isDefault: dto.isDefault,
+        customAttributes: dto.customAttributes,
+    };
 }
 
 export function jobCardFromApi(dto: JobCardDto): JobCard {
@@ -103,7 +110,14 @@ export function toDeleteCardRequest(cardId: string): DeleteCardRequestDto {
 export function boardDataToApi(data: BoardData): BoardDataDto {
     return {
         board: datesToIso<BoardDto>(data.board, BOARD_DATE_KEYS),
-        columns: data.columns.map((col) => ({ ...col }) as ColumnDto),
+        columns: data.columns.map((col) => ({
+            id: col.id,
+            boardId: col.boardId,
+            name: col.name,
+            sortOrder: col.order,       // order → sortOrder
+            isDefault: col.isDefault,
+            customAttributes: col.customAttributes,
+        })),
         cards: data.cards.map((card) =>
             datesToIso<JobCardDto>(omitKeys(card, []), CARD_DATE_KEYS)
         ),

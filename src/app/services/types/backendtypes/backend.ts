@@ -22,7 +22,7 @@ export interface ColumnDto {
     id: string;
     boardId: string;
     name: string;
-    order: number;
+    sortOrder: number;
     isDefault: boolean;
     customAttributes?: Record<string, unknown>;
 }
@@ -138,7 +138,7 @@ export interface DeleteCardRequestDto {
 export interface UpdateColumnRequestDto {
     columnId: string;
     name?: string;
-    order?: number;
+    sortOrder?: number;
     customAttributes?: Record<string, unknown>;
 }
 
