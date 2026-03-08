@@ -20,8 +20,17 @@ function setupLocalStorageMock() {
   });
 }
 
+const TEST_BOARD_ID = 'board-test';
+
 const mockBoard: BoardData = {
-  columns: INITIAL_DATA.columns,
+  board: {
+    id: TEST_BOARD_ID,
+    userId: 'user-test',
+    name: 'Test Board',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  columns: INITIAL_DATA.columns.map(col => ({ ...col, boardId: TEST_BOARD_ID })),
   cards: [],
 };
 
@@ -38,8 +47,8 @@ describe('StorageService 存储与 Date 反序列化', () => {
     expect(loaded.cards.length).toBe(0);
   });
 
-  it('saveBoard 后 loadBoard 应得到相同结构', () => {
-    const withCard = BoardService.addJob(mockBoard, '前端', '某司', mockBoard.columns[0].id);
+  it('saveBoard 后 loadBoard 应得到相同结构', async () => {
+    const withCard = await BoardService.addJob(mockBoard, '前端', '某司', mockBoard.columns[0].id);
     StorageService.saveBoard(withCard);
     const loaded = StorageService.loadBoard();
     expect(loaded.cards.length).toBe(1);
@@ -47,8 +56,8 @@ describe('StorageService 存储与 Date 反序列化', () => {
     expect(loaded.cards[0].companyName).toBe('某司');
   });
 
-  it('loadBoard 后卡片的 createdAt/updatedAt 应为 Date 实例', () => {
-    const withCard = BoardService.addJob(mockBoard, '测试', '公司', mockBoard.columns[0].id);
+  it('loadBoard 后卡片的 createdAt/updatedAt 应为 Date 实例', async () => {
+    const withCard = await BoardService.addJob(mockBoard, '测试', '公司', mockBoard.columns[0].id);
     StorageService.saveBoard(withCard);
     const loaded = StorageService.loadBoard();
     const card = loaded.cards[0];

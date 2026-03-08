@@ -70,7 +70,7 @@ export interface BoardDataDto {
  * 创建看板请求 DTO
  */
 export interface CreateBoardRequestDto {
-    name: string;
+    name?: string;
 }
 
 /**
