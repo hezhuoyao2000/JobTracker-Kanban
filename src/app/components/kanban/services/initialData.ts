@@ -16,13 +16,23 @@ export const LINK_SOURCE_OPTIONS = [
   { value: 'custom', label: 'Enter custom...' },
 ] as const;
 
+/** 初始看板 ID */
+const INITIAL_BOARD_ID = 'board-initial';
+
 export const INITIAL_DATA: BoardData = {
+  board: {
+    id: INITIAL_BOARD_ID,
+    userId: 'user-initial',
+    name: 'My Job Tracker',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
   columns: [
-    { id: 'col-todo', name: 'Wish list', order: 1, isDefault: true, customAttributes: {} },
-    { id: 'col-applied', name: 'Applied', order: 2, isDefault: true, customAttributes: {} },
-    { id: 'col-interview', name: 'Interviewing', order: 3, isDefault: true, customAttributes: {} },
-    { id: 'col-offered', name: 'Offered', order: 4, isDefault: true, customAttributes: {} },
-    { id: 'col-rejected', name: 'Rejected', order: 5, isDefault: true, customAttributes: {} },
+    { id: 'col-todo', boardId: INITIAL_BOARD_ID, name: 'Wish list', order: 1, isDefault: true, customAttributes: {} },
+    { id: 'col-applied', boardId: INITIAL_BOARD_ID, name: 'Applied', order: 2, isDefault: true, customAttributes: {} },
+    { id: 'col-interview', boardId: INITIAL_BOARD_ID, name: 'Interviewing', order: 3, isDefault: true, customAttributes: {} },
+    { id: 'col-offered', boardId: INITIAL_BOARD_ID, name: 'Offered', order: 4, isDefault: true, customAttributes: {} },
+    { id: 'col-rejected', boardId: INITIAL_BOARD_ID, name: 'Rejected', order: 5, isDefault: true, customAttributes: {} },
   ],
   cards: [], // 正式数据为空；展示时由 getBoardWithMockCards 注入假数据
 };

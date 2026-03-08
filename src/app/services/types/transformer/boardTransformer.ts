@@ -8,6 +8,8 @@ import type {
     BoardDto, ColumnDto, JobCardDto, BoardDataDto,
     CreateCardRequestDto, UpdateCardRequestDto,
     MoveCardRequestDto, DeleteCardRequestDto,
+    CreateBoardRequestDto,
+    UpdateColumnRequestDto,
 } from '../backendtypes/backend';
 
 // ==================== 日期字段常量（维护点：新增日期字段只需在这里加 key）====================
@@ -79,6 +81,15 @@ export function boardDataFromApi(dto: BoardDataDto): BoardData {
 
 // ==================== 前端 → API 请求（序列化）====================
 
+/** 新建看板请求 */
+export function toCreateBoardRequest(name?: string): CreateBoardRequestDto {
+    const request: CreateBoardRequestDto = {};
+    if (name) {
+        request.name = name;
+    }
+    return request;
+}
+
 /** 新建卡片：排除自动生成字段，日期转 ISO */
 export function toCreateCardRequest(
     card: Omit<JobCard, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
@@ -103,6 +114,30 @@ export function toMoveCardRequest(cardId: string, targetStatusId: string): MoveC
 
 export function toDeleteCardRequest(cardId: string): DeleteCardRequestDto {
     return { cardId };
+}
+
+/** 更新列请求 */
+export function toUpdateColumnRequest(
+    columnId: string,
+    updates: Partial<Omit<Column, 'id' | 'boardId'>>
+): UpdateColumnRequestDto {
+    const request: UpdateColumnRequestDto = {
+        columnId,
+    };
+    
+    if (updates.name !== undefined) {
+        request.name = updates.name;
+    }
+    
+    if (updates.order !== undefined) {
+        request.sortOrder = updates.order;
+    }
+    
+    if (updates.customAttributes !== undefined) {
+        request.customAttributes = updates.customAttributes;
+    }
+    
+    return request;
 }
 
 // ==================== 前端 → API 完整数据（序列化，用于 localStorage 兼容等）====================
