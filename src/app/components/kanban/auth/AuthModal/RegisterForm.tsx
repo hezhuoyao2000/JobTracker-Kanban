@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { User, Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
-import { useTheme } from '../../theme/ThemeContext';
+import { useTheme } from '../../../theme/ThemeContext';
 import type { RegisterFormData, ValidationErrors } from './types';
 
 interface RegisterFormProps {

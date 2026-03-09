@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { X } from 'lucide-react';
-import { useTheme } from '../../theme/ThemeContext';
+import { useTheme } from '../../../theme/ThemeContext';
 import { useAuthModal } from './useAuthModal';
 import { LoginForm } from './LoginForm';
 import { RegisterForm } from './RegisterForm';

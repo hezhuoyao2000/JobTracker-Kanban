@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { User, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
-import { useTheme } from '../../theme/ThemeContext';
+import { useTheme } from '../../../theme/ThemeContext';
 import type { LoginFormData, ValidationErrors } from './types';
 
 interface LoginFormProps {
