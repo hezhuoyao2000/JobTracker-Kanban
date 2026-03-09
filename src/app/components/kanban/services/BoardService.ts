@@ -1,4 +1,8 @@
 import { BoardData, JobCard } from '../../../services/types/frontendtypes/frontend';
+import type {
+  CreateCardRequestDto,
+  UpdateCardRequestDto,
+} from '../../../services/types/backendtypes/backend';
 import * as boardApi from '../../../services/api/board';
 import * as cardApi from '../../../services/api/card';
 import * as columnApi from '../../../services/api/column';
@@ -77,7 +81,7 @@ export const BoardService = {
       statusId,
       jobTitle,
       companyName,
-      options as any // 传递额外字段，由 cardApi 处理
+      options as Omit<CreateCardRequestDto, 'boardId' | 'statusId' | 'jobTitle' | 'companyName'>
     );
 
     const newCard = jobCardFromApi(cardDto);
@@ -101,7 +105,7 @@ export const BoardService = {
     updates: Partial<Omit<JobCard, 'id' | 'boardId' | 'createdAt' | 'updatedAt'>>
   ): Promise<BoardData> {
     // 调用 API 更新卡片
-    const cardDto = await cardApi.updateCard(cardId, updates as any);
+    const cardDto = await cardApi.updateCard(cardId, updates as Omit<UpdateCardRequestDto, 'cardId'>);
     const updatedCard = jobCardFromApi(cardDto);
 
     return {
