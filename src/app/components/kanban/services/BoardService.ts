@@ -1,5 +1,4 @@
 import { BoardData, JobCard } from '../../../services/types/frontendtypes/frontend';
-import type { CreateCardRequestDto, UpdateCardRequestDto } from '../../../services/types/backendtypes/backend';
 import * as boardApi from '../../../services/api/board';
 import * as cardApi from '../../../services/api/card';
 import * as columnApi from '../../../services/api/column';
@@ -8,44 +7,6 @@ import {
   jobCardFromApi,
   columnFromApi,
 } from '../../../services/types/transformer/boardTransformer';
-
-/**
- * 将前端 JobCard 的可选字段转换为后端 DTO 格式
- * 主要处理 Date 类型转换为 ISO 8601 字符串
- */
-function toCardOptions(options?: Partial<Omit<JobCard, 'id' | 'createdAt' | 'updatedAt' | 'jobTitle' | 'companyName' | 'statusId'>>): Omit<CreateCardRequestDto, 'boardId' | 'statusId' | 'jobTitle' | 'companyName'> | undefined {
-  if (!options) return undefined;
-  
-  const result: Record<string, unknown> = {};
-  
-  for (const [key, value] of Object.entries(options)) {
-    if (value instanceof Date) {
-      result[key] = value.toISOString();
-    } else if (value !== undefined) {
-      result[key] = value;
-    }
-  }
-  
-  return result as Omit<CreateCardRequestDto, 'boardId' | 'statusId' | 'jobTitle' | 'companyName'>;
-}
-
-/**
- * 将前端更新字段转换为后端 DTO 格式
- * 主要处理 Date 类型转换为 ISO 8601 字符串
- */
-function toUpdateOptions(updates: Partial<Omit<JobCard, 'id' | 'boardId' | 'createdAt' | 'updatedAt'>>): Omit<UpdateCardRequestDto, 'cardId'> {
-  const result: Record<string, unknown> = {};
-  
-  for (const [key, value] of Object.entries(updates)) {
-    if (value instanceof Date) {
-      result[key] = value.toISOString();
-    } else if (value !== undefined) {
-      result[key] = value;
-    }
-  }
-  
-  return result as Omit<UpdateCardRequestDto, 'cardId'>;
-}
 
 /**
  * BoardService - 看板业务逻辑服务
@@ -110,16 +71,13 @@ export const BoardService = {
     statusId: string,
     options?: Partial<Omit<JobCard, 'id' | 'createdAt' | 'updatedAt' | 'jobTitle' | 'companyName' | 'statusId'>>
   ): Promise<BoardData> {
-    // 转换 options 中的 Date 类型为 ISO 字符串
-    const convertedOptions = toCardOptions(options);
-    
     // 调用 API 创建卡片
     const cardDto = await cardApi.createCard(
       board.board.id,
       statusId,
       jobTitle,
       companyName,
-      convertedOptions
+      options as any // 传递额外字段，由 cardApi 处理
     );
 
     const newCard = jobCardFromApi(cardDto);
@@ -142,11 +100,8 @@ export const BoardService = {
     cardId: string,
     updates: Partial<Omit<JobCard, 'id' | 'boardId' | 'createdAt' | 'updatedAt'>>
   ): Promise<BoardData> {
-    // 转换 updates 中的 Date 类型为 ISO 字符串
-    const convertedUpdates = toUpdateOptions(updates);
-    
     // 调用 API 更新卡片
-    const cardDto = await cardApi.updateCard(cardId, convertedUpdates);
+    const cardDto = await cardApi.updateCard(cardId, updates as any);
     const updatedCard = jobCardFromApi(cardDto);
 
     return {

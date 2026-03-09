@@ -1,6 +1,10 @@
 /**
  * 看板相关类型转换器
  * 通用日期转换 + 薄封装，新增/修改字段只需维护 DATE_KEYS 常量和类型定义
+ *
+ * 特殊字段处理:
+ * - tags: 后端 Response 返回逗号分隔字符串，Request 发送数组
+ * - extra: 后端 Response 返回 JSON 字符串，Request 发送对象
  */
 
 import type { Board, Column, JobCard, BoardData } from '../frontendtypes/frontend';
@@ -68,7 +72,27 @@ export function columnFromApi(dto: ColumnDto): Column {
 }
 
 export function jobCardFromApi(dto: JobCardDto): JobCard {
-    return parseIsoToDates<JobCard>(dto, CARD_DATE_KEYS);
+    const card = parseIsoToDates<JobCard>(dto, CARD_DATE_KEYS);
+
+    // 处理 tags: 后端返回逗号分隔字符串 -> 前端使用数组
+    if (typeof dto.tags === 'string') {
+        card.tags = dto.tags.split(',').map(t => t.trim()).filter(t => t.length > 0);
+    } else if (dto.tags === null || dto.tags === undefined) {
+        card.tags = undefined;
+    }
+
+    // 处理 extra: 后端返回 JSON 字符串 -> 前端使用对象
+    if (typeof dto.extra === 'string') {
+        try {
+            card.extra = JSON.parse(dto.extra);
+        } catch {
+            card.extra = undefined;
+        }
+    } else if (dto.extra === null || dto.extra === undefined) {
+        card.extra = undefined;
+    }
+
+    return card;
 }
 
 export function boardDataFromApi(dto: BoardDataDto): BoardData {
@@ -90,22 +114,63 @@ export function toCreateBoardRequest(name?: string): CreateBoardRequestDto {
     return request;
 }
 
-/** 新建卡片：排除自动生成字段，日期转 ISO */
+/**
+ * 新建卡片请求
+ * 前端 JobCard 的 extra 是对象，tags 是数组，与后端 Request DTO 一致，无需转换
+ * 只需处理日期转 ISO
+ */
 export function toCreateCardRequest(
     card: Omit<JobCard, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>
 ): CreateCardRequestDto {
-    return datesToIso<CreateCardRequestDto>(card, CARD_DATE_KEYS);
+    const result: Record<string, unknown> = {};
+
+    // 复制必填字段
+    result.boardId = card.boardId;
+    result.statusId = card.statusId;
+    result.jobTitle = card.jobTitle;
+    result.companyName = card.companyName;
+
+    // 复制可选字段
+    const optionalFields = ['jobLink', 'sourcePlatform', 'expired', 'jobLocation', 'description', 'tags', 'comments', 'extra'] as const;
+    for (const key of optionalFields) {
+        if (card[key] !== undefined) {
+            result[key] = card[key];
+        }
+    }
+
+    // 处理日期字段转 ISO
+    if (card.appliedTime instanceof Date) {
+        result.appliedTime = card.appliedTime.toISOString();
+    }
+
+    return result as unknown as CreateCardRequestDto;
 }
 
-/** 更新卡片：只传变更字段 + cardId，日期转 ISO */
+/**
+ * 更新卡片请求
+ * 只传变更字段 + cardId，日期转 ISO
+ * tags 和 extra 保持原格式（数组和对象）
+ */
 export function toUpdateCardRequest(
     cardId: string,
     updates: Partial<Omit<JobCard, 'id' | 'boardId' | 'createdAt' | 'updatedAt' | 'deletedAt'>>
 ): UpdateCardRequestDto {
-    return {
-        cardId,
-        ...datesToIso<Omit<UpdateCardRequestDto, 'cardId'>>(updates, CARD_DATE_KEYS),
-    };
+    const result: Record<string, unknown> = { cardId };
+
+    // 复制变更字段
+    const optionalFields = ['jobTitle', 'statusId', 'companyName', 'jobLink', 'sourcePlatform', 'expired', 'jobLocation', 'description', 'tags', 'comments', 'extra'] as const;
+    for (const key of optionalFields) {
+        if (updates[key] !== undefined) {
+            result[key] = updates[key];
+        }
+    }
+
+    // 处理日期字段转 ISO
+    if (updates.appliedTime instanceof Date) {
+        result.appliedTime = updates.appliedTime.toISOString();
+    }
+
+    return result as unknown as UpdateCardRequestDto;
 }
 
 export function toMoveCardRequest(cardId: string, targetStatusId: string): MoveCardRequestDto {
@@ -142,6 +207,10 @@ export function toUpdateColumnRequest(
 
 // ==================== 前端 → API 完整数据（序列化，用于 localStorage 兼容等）====================
 
+/**
+ * 将前端 BoardData 转换为后端 BoardDataDto 格式
+ * 用于 localStorage 存储，保持与后端 Response 格式一致
+ */
 export function boardDataToApi(data: BoardData): BoardDataDto {
     return {
         board: datesToIso<BoardDto>(data.board, BOARD_DATE_KEYS),
@@ -153,8 +222,37 @@ export function boardDataToApi(data: BoardData): BoardDataDto {
             isDefault: col.isDefault,
             customAttributes: col.customAttributes,
         })),
-        cards: data.cards.map((card) =>
-            datesToIso<JobCardDto>(omitKeys(card, []), CARD_DATE_KEYS)
-        ),
+        cards: data.cards.map((card) => {
+            // 基础字段转换（日期转 ISO）
+            const baseDto = datesToIso<Record<string, unknown>>(
+                omitKeys(card, ['tags', 'extra', 'boardId']),
+                CARD_DATE_KEYS
+            );
+
+            const dto: JobCardDto = {
+                id: card.id,
+                boardId: card.boardId,
+                jobTitle: card.jobTitle,
+                statusId: card.statusId,
+                companyName: card.companyName,
+                jobLink: card.jobLink,
+                sourcePlatform: card.sourcePlatform,
+                expired: card.expired,
+                jobLocation: card.jobLocation,
+                description: card.description,
+                appliedTime: baseDto.appliedTime as string | undefined,
+                createdAt: baseDto.createdAt as string | undefined,
+                updatedAt: baseDto.updatedAt as string | undefined,
+                deletedAt: baseDto.deletedAt as string | undefined,
+                // 处理 tags: 前端数组 -> 后端逗号分隔字符串
+                tags: Array.isArray(card.tags) && card.tags.length > 0 ? card.tags.join(',') : null,
+                // 处理 comments
+                comments: card.comments ?? null,
+                // 处理 extra: 前端对象 -> 后端 JSON 字符串
+                extra: (card.extra && typeof card.extra === 'object') ? JSON.stringify(card.extra) : null,
+            };
+
+            return dto;
+        }),
     };
 }

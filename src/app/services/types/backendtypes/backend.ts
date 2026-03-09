@@ -42,12 +42,9 @@ export interface JobCardDto {
     jobLocation?: string;
     description?: string;
     appliedTime?: string;           // ISO 8601 格式
-    tags?: string[];
-    comments?: string;
-    extra?: {
-        contactInfo?: string;
-        file?: string[];
-    };
+    tags?: string | null;           // 后端返回逗号分隔字符串，如 "急招，大厂，高薪"
+    comments?: string | null;
+    extra?: string | null;          // 后端返回 JSON 字符串，如 '{"contactInfo":"xxx"}'
     createdAt?: string;             // ISO 8601 格式
     updatedAt?: string;             // ISO 8601 格式
     deletedAt?: string;             // ISO 8601 格式，软删除时间戳

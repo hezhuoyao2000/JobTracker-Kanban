@@ -274,29 +274,45 @@ interface UpdateColumnRequest {
 
 ```typescript
 interface LoginRequest {
-  userId: string;       // 用户 ID，不能为空
+  username: string;     // 必填，用户名
+  password: string;     // 必填，密码
 }
 ```
+
+**变更说明：**
+- ✅ **2026-03-08 更新**：登录方式从 `userId` 改为 `username + password`
+- 密码使用 BCrypt 加密存储和验证
+- 登录失败统一返回 `401` 错误码，不区分用户名不存在或密码错误
 
 ### 5.2 LoginResponse - 登录响应
 
 ```typescript
 interface LoginResponse {
-  userId: string;       // 用户 ID
+  userId: string;       // 用户 ID（UUID）
+  username: string;     // 用户名
+  displayName: string;  // 显示名称
   token: string;        // JWT Token
   tokenType: string;    // Token 类型，固定为 "Bearer"
 }
 ```
 
+**变更说明：**
+- ✅ **2026-03-08 更新**：增加了 `username` 和 `displayName` 字段
+
 ### 5.3 RegisterRequest - 注册请求
 
 ```typescript
 interface RegisterRequest {
-  username: string;         // 必填，用户名
-  displayName?: string;     // 可选，显示名称
+  username: string;         // 必填，用户名（唯一）
+  password: string;         // 必填，密码（至少6位）
+  displayName?: string;     // 可选，显示名称（不传则使用 username）
   email?: string;           // 可选，邮箱
 }
 ```
+
+**变更说明：**
+- ✅ **2026-03-08 更新**：`password` 变为必填字段，长度至少6位
+- 密码使用 BCrypt 加密存储
 
 ### 5.4 RegisterResponse - 注册响应
 
@@ -304,10 +320,14 @@ interface RegisterRequest {
 interface RegisterResponse {
   userId: string;       // 用户 ID（UUID 格式）
   username: string;     // 用户名
+  displayName: string;  // 显示名称
   token: string;        // JWT Token
   tokenType: string;    // Token 类型，固定为 "Bearer"
 }
 ```
+
+**变更说明：**
+- ✅ **2026-03-08 更新**：增加了 `displayName` 字段
 
 ---
 
@@ -317,8 +337,8 @@ interface RegisterResponse {
 
 | 方法 | 路径 | 请求体 | 响应体 | 说明 |
 |------|------|--------|--------|------|
-| POST | `/auth/login` | `LoginRequest` | `ApiResponse<LoginResponse>` | 用户登录，自动创建不存在用户 |
-| POST | `/auth/register` | `RegisterRequest` | `ApiResponse<RegisterResponse>` | 用户注册 |
+| POST | `/auth/login` | `LoginRequest` | `ApiResponse<LoginResponse>` | 用户登录（用户名+密码） |
+| POST | `/auth/register` | `RegisterRequest` | `ApiResponse<RegisterResponse>` | 用户注册（用户名+密码） |
 
 ### 6.2 看板接口（需认证）
 
@@ -467,24 +487,29 @@ interface UpdateColumnRequest {
 // ============================================
 
 interface LoginRequest {
-  userId: string;
+  username: string;     // 必填，用户名
+  password: string;     // 必填，密码
 }
 
 interface LoginResponse {
-  userId: string;
-  token: string;
-  tokenType: string;
+  userId: string;       // 用户 ID（UUID）
+  username: string;     // 用户名
+  displayName: string;  // 显示名称
+  token: string;        // JWT Token
+  tokenType: string;    // Token 类型
 }
 
 interface RegisterRequest {
-  username: string;
-  displayName?: string;
-  email?: string;
+  username: string;         // 必填，用户名
+  password: string;         // 必填，密码（至少6位）
+  displayName?: string;     // 可选，显示名称
+  email?: string;           // 可选，邮箱
 }
 
 interface RegisterResponse {
   userId: UUID;
   username: string;
+  displayName: string;
   token: string;
   tokenType: string;
 }
@@ -534,19 +559,42 @@ async function apiCall<T>(
 ### 8.2 登录示例
 
 ```typescript
-async function login(userId: string): Promise<LoginResponse> {
+async function login(username: string, password: string): Promise<LoginResponse> {
   const data = await apiCall<LoginResponse>(
     '/auth/login',
-    { userId },
+    { username, password },
     false  // 不需要认证
   );
   localStorage.setItem('token', data.token);
   localStorage.setItem('userId', data.userId);
+  localStorage.setItem('username', data.username);
+  localStorage.setItem('displayName', data.displayName);
   return data;
 }
 ```
 
-### 8.3 加载看板示例
+### 8.3 注册示例
+
+```typescript
+async function register(
+  username: string,
+  password: string,
+  displayName?: string
+): Promise<RegisterResponse> {
+  const data = await apiCall<RegisterResponse>(
+    '/auth/register',
+    { username, password, displayName },
+    false  // 不需要认证
+  );
+  localStorage.setItem('token', data.token);
+  localStorage.setItem('userId', data.userId);
+  localStorage.setItem('username', data.username);
+  localStorage.setItem('displayName', data.displayName);
+  return data;
+}
+```
+
+### 8.4 加载看板示例
 
 ```typescript
 async function loadBoard(boardId?: string): Promise<BoardDataDto> {
@@ -554,7 +602,7 @@ async function loadBoard(boardId?: string): Promise<BoardDataDto> {
 }
 ```
 
-### 8.4 创建卡片示例
+### 8.5 创建卡片示例
 
 ```typescript
 async function createCard(request: CreateCardRequest): Promise<JobCardDto> {
@@ -572,7 +620,7 @@ const newCard = await createCard({
 });
 ```
 
-### 8.5 更新卡片示例
+### 8.6 更新卡片示例
 
 ```typescript
 async function updateCard(request: UpdateCardRequest): Promise<JobCardDto> {
@@ -586,7 +634,7 @@ await updateCard({
 });
 ```
 
-### 8.6 移动卡片示例
+### 8.7 移动卡片示例
 
 ```typescript
 async function moveCard(cardId: string, targetStatusId: string): Promise<JobCardDto> {
@@ -597,7 +645,7 @@ async function moveCard(cardId: string, targetStatusId: string): Promise<JobCard
 }
 ```
 
-### 8.7 删除卡片示例
+### 8.8 删除卡片示例
 
 ```typescript
 async function deleteCard(cardId: string): Promise<void> {
@@ -642,11 +690,40 @@ async function deleteCard(cardId: string): Promise<void> {
 - `code === 200` 表示成功
 - 其他 code 表示错误，错误信息在 `message` 字段
 - 常见错误码：
-  - `400` - 请求参数错误
-  - `401` - 未认证（Token 无效或过期）
+  - `400` - 请求参数错误（如密码长度不足）
+  - `401` - 未认证（Token 无效或过期）或登录密码错误
   - `403` - 无权限
   - `404` - 资源不存在
   - `409` - 冲突（如用户名已存在）
+
+#### 认证相关错误示例
+
+**登录失败：**
+```json
+{
+  "code": 401,
+  "message": "用户名或密码错误",
+  "data": null
+}
+```
+
+**用户名已存在：**
+```json
+{
+  "code": 409,
+  "message": "用户名已存在",
+  "data": null
+}
+```
+
+**密码长度不足：**
+```json
+{
+  "code": 400,
+  "message": "密码不能为空且长度至少6位",
+  "data": null
+}
+```
 
 ### 9.4 Swagger 文档
 
@@ -661,6 +738,7 @@ async function deleteCard(cardId: string): Promise<void> {
 | 日期 | 版本 | 更新内容 |
 |------|------|----------|
 | 2026-03-08 | v1.0 | 初始版本，包含所有接口和类型定义 |
+| 2026-03-08 | v2.0 | **认证系统重大更新**：<br>- 登录接口改为 `username + password`<br>- 注册接口要求提供 `password`（至少6位）<br>- 登录/注册响应增加 `displayName` 字段<br>- 密码使用 BCrypt 加密存储 |
 
 ---
 

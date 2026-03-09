@@ -29,7 +29,7 @@ export interface BoardContextValue {
   handleUpdateCard: (cardId: string, updates: Partial<JobCard>) => void;
   handleDeleteCard: (cardId: string) => void;
   handleMoveCard: (cardId: string, targetColId: string) => void;
-  
+
   // 弹窗状态
   isCardOpen: boolean;
   selectedCard: JobCard | null;
@@ -48,6 +48,12 @@ export interface BoardContextValue {
   // 表单提交 （内部会调用update/add + closeCard）
   handleSave: (data: Partial<JobCard>) => void;
   handleDelete: (id: string) => void;
+
+  // 数据模式信息
+  /** 当前数据模式：'online' 使用云端数据，'offline' 使用本地数据 */
+  mode: 'online' | 'offline';
+  /** 是否已登录 */
+  isAuthenticated: boolean;
 }
 
 // ============ 2. 创建 Context ============
@@ -62,6 +68,8 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
     handleUpdateCard,
     handleDeleteCard,
     handleMoveCard,
+    mode,
+    isAuthenticated,
   } = useBoard();
 
   const [isCardOpen, setIsCardOpen] = useState(false);
@@ -149,6 +157,8 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
       closePreview,
       handleSave,
       handleDelete,
+      mode,
+      isAuthenticated,
     }),
     [
       board,
@@ -167,6 +177,8 @@ export function BoardProvider({ children }: { children: React.ReactNode }) {
       closePreview,
       handleSave,
       handleDelete,
+      mode,
+      isAuthenticated,
     ]
   );
 

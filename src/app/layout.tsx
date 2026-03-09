@@ -7,6 +7,7 @@ import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
 import { ThemeProvider } from '@/src/app/components/theme/ThemeContext';
 import { fontVariableClassNames } from '@/src/app/components/theme/fontTokens';
 import { BoardProvider } from "./components/kanban/context/BoardContext";
+import { ReactQueryProvider } from "./components/providers/ReactQueryProvider";
 
 export const metadata: Metadata = {
   title: "Job Tracker",
@@ -23,13 +24,15 @@ export default function RootLayout({
       <body
         className={`${fontVariableClassNames} antialiased`}
       >
-        <ThemeProvider>
-          <GluestackUIProvider mode="light">
-            <BoardProvider>
-              {children}
-            </BoardProvider>
-          </GluestackUIProvider>
-        </ThemeProvider>
+        <ReactQueryProvider>
+          <ThemeProvider>
+            <GluestackUIProvider mode="light">
+              <BoardProvider>
+                {children}
+              </BoardProvider>
+            </GluestackUIProvider>
+          </ThemeProvider>
+        </ReactQueryProvider>
         <ToastContainer
           position="top-right"
           autoClose={3000}
