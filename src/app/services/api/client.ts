@@ -101,12 +101,10 @@ apiClient.interceptors.request.use(
 // 刷新 Token 的函数
 const refreshAuthLogic = async (failedRequest: AxiosError) => {
   const refreshToken = getRefreshToken();
-  
+
   if (!refreshToken) {
     clearToken();
-    if (typeof window !== 'undefined') {
-      window.location.href = '/login';
-    }
+    // 留在当前页面，不自动跳转，允许用户离线使用
     return Promise.reject(failedRequest);
   }
 
@@ -120,18 +118,16 @@ const refreshAuthLogic = async (failedRequest: AxiosError) => {
       const { token, refreshToken: newRefreshToken } = response.data.data;
       setToken(token);
       setRefreshToken(newRefreshToken);
-      
+
       if (failedRequest.response?.config.headers) {
         failedRequest.response.config.headers.Authorization = `Bearer ${token}`;
       }
-      
+
       return Promise.resolve();
     }
   } catch (error) {
     clearToken();
-    if (typeof window !== 'undefined') {
-      window.location.href = '/login';
-    }
+    // 留在当前页面，不自动跳转，允许用户离线使用
     return Promise.reject(error);
   }
 };
@@ -164,11 +160,9 @@ apiClient.interceptors.response.use(
       // 根据状态码处理错误
       switch (status) {
         case 401:
-          // 未认证，清除 token 并跳转登录
+          // 未认证，清除 token 但不跳转，允许用户离线使用
           clearToken();
-          if (typeof window !== 'undefined') {
-            window.location.href = '/login';
-          }
+          console.log('认证已过期，已切换到离线模式');
           break;
         case 403:
           console.error('权限不足');

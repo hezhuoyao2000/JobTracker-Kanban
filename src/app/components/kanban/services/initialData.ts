@@ -5,7 +5,7 @@ export const LINK_SOURCE_OPTIONS = [
   { value: 'seek', label: 'Seek' },
   { value: 'linkedin', label: 'LinkedIn' },
   { value: 'trademe', label: 'Trade Me Jobs' },
-  { value: 'prosple', label: 'Prosple' },  
+  { value: 'prosple', label: 'Prosple' },
   { value: 'indeed', label: 'Indeed NZ' },
   { value: 'summeroftech', label: 'Summer of Tech' },
   { value: 'workhere', label: 'WorkHere' },
@@ -16,23 +16,38 @@ export const LINK_SOURCE_OPTIONS = [
   { value: 'custom', label: 'Enter custom...' },
 ] as const;
 
-/** 初始看板 ID */
-const INITIAL_BOARD_ID = 'board-initial';
+/**
+ * 初始看板数据（使用 UUID 格式 ID）
+ * 注意：这些数据仅用于 SSR 初始渲染，实际数据应从后端加载
+ * 后端会在用户注册/登录时自动创建默认看板
+ */
+
+/** 初始看板 ID（UUID 格式） */
+const INITIAL_BOARD_ID = '550e8400-e29b-41d4-a716-446655440000';
+
+/** 初始列 ID（UUID 格式） */
+const COLUMN_IDS = {
+  WISH_LIST: '550e8400-e29b-41d4-a716-446655440001',
+  APPLIED: '550e8400-e29b-41d4-a716-446655440002',
+  INTERVIEWING: '550e8400-e29b-41d4-a716-446655440003',
+  OFFERED: '550e8400-e29b-41d4-a716-446655440004',
+  REJECTED: '550e8400-e29b-41d4-a716-446655440005',
+} as const;
 
 export const INITIAL_DATA: BoardData = {
   board: {
     id: INITIAL_BOARD_ID,
-    userId: 'user-initial',
+    userId: '550e8400-e29b-41d4-a716-446655440010',
     name: 'My Job Tracker',
     createdAt: new Date(),
     updatedAt: new Date(),
   },
   columns: [
-    { id: 'col-todo', boardId: INITIAL_BOARD_ID, name: 'Wish list', order: 1, isDefault: true, customAttributes: {} },
-    { id: 'col-applied', boardId: INITIAL_BOARD_ID, name: 'Applied', order: 2, isDefault: true, customAttributes: {} },
-    { id: 'col-interview', boardId: INITIAL_BOARD_ID, name: 'Interviewing', order: 3, isDefault: true, customAttributes: {} },
-    { id: 'col-offered', boardId: INITIAL_BOARD_ID, name: 'Offered', order: 4, isDefault: true, customAttributes: {} },
-    { id: 'col-rejected', boardId: INITIAL_BOARD_ID, name: 'Rejected', order: 5, isDefault: true, customAttributes: {} },
+    { id: COLUMN_IDS.WISH_LIST, boardId: INITIAL_BOARD_ID, name: 'Wish list', order: 0, isDefault: true, customAttributes: {} },
+    { id: COLUMN_IDS.APPLIED, boardId: INITIAL_BOARD_ID, name: 'Applied', order: 1, isDefault: true, customAttributes: {} },
+    { id: COLUMN_IDS.INTERVIEWING, boardId: INITIAL_BOARD_ID, name: 'Interviewing', order: 2, isDefault: true, customAttributes: {} },
+    { id: COLUMN_IDS.OFFERED, boardId: INITIAL_BOARD_ID, name: 'Offered', order: 3, isDefault: true, customAttributes: {} },
+    { id: COLUMN_IDS.REJECTED, boardId: INITIAL_BOARD_ID, name: 'Rejected', order: 4, isDefault: true, customAttributes: {} },
   ],
-  cards: [], // 正式数据为空；展示时由 getBoardWithMockCards 注入假数据
+  cards: [], // 正式数据为空；实际数据从后端加载
 };
