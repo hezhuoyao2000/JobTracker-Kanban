@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { login, register } from '../../../services/api/auth';
+import { login, register } from '../../../../services/api/auth';
 import type { UserInfo } from '../AuthContext';
 import type {
   AuthMode,

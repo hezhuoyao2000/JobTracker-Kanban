@@ -4,37 +4,15 @@ import { useState } from 'react';
 import { KanbanBox } from '../components/kanban/KanbanBox';
 import { FormEditWindow } from '../components/kanban/FormEditWindow';
 import { PreviewWindow } from '../components/kanban/PreviewWindow';
-import { AuthModal } from '../components/auth/AuthModal';
+import { AuthModal } from '../components/kanban/auth/AuthModal';
+import { ModeIndicator } from '../components/kanban/ModeIndicator';
 import { useBoardContext } from '../components/kanban/context/BoardContext';
 import { useTheme } from '../components/theme/ThemeContext';
 import { ThemeSwitch } from '../components/theme/ThemeSwitch';
 import { Divider } from '@/components/ui/divider';
 import { AddNewButton } from '../components/kanban/AddNewButton';
-import { AuthProvider, useAuth } from '../components/auth/AuthContext';
-import { UserMenu } from '../components/auth/UserMenu';
-
-/**
- * 数据模式指示器组件
- */
-function ModeIndicator() {
-  const { mode } = useBoardContext();
-
-  if (mode === 'online') {
-    return (
-      <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs font-medium">
-        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-        云端模式
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex items-center gap-1.5 px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium">
-      <span className="w-2 h-2 rounded-full bg-amber-500" />
-      本地模式
-    </div>
-  );
-}
+import { AuthProvider, useAuth } from '../components/kanban/auth/AuthContext';
+import { UserMenu } from '../components/kanban/auth/UserMenu';
 
 /**
  * JobPage 内容组件
@@ -42,7 +20,7 @@ function ModeIndicator() {
  */
 function JobPageContent() {
   const { backgroundClass, text, themeClass, font } = useTheme();
-  const { formInstanceId, mode } = useBoardContext();
+  const { formInstanceId } = useBoardContext();
   const { loginSuccess } = useAuth();
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 

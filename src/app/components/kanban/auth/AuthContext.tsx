@@ -13,8 +13,8 @@ import {
   getCurrentUser,
   isAuthenticated as checkIsAuthenticated,
   logout as authLogout,
-} from '../../services/api/auth';
-import { notifyAuthChange } from '../kanban/hooks/useBoard';
+} from '../../../services/api/auth';
+import { notifyAuthChange } from '../hooks/useBoard';
 
 /**
  * 用户信息接口
