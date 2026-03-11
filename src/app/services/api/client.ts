@@ -12,7 +12,9 @@ import axios, {
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 
 // API 基础配置
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+//const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+const API_BASE_URL = 'http://43.156.61.11:8080';
+
 
 // Token 存储键名
 const TOKEN_KEY = 'token';
