@@ -1,0 +1,104 @@
+---
+alwaysApply: true
+---
+# Cursor Rules for React + Next.js + gluestack ui v2  Projects
+
+## chat rules
+1. using simplified chinese
+2. When say 讨论，means 只讨论不编辑代码， until i ask you to edit 
+
+## General Guidelines
+1. Always follow **industry best practices** for React and Next.js development.
+2. Generate clean, maintainable, and well-structured code.
+3. Use **ESLint** and **Prettier**-friendly syntax.
+4. Keep imports organized and minimal. Remove unused imports automatically.
+
+## General Philosophy
+- The AI should **strictly follow user instructions** but may **autonomously apply best practices** when necessary for:
+  - Code correctness or runtime stability
+  - Maintainability and readability
+  - Minimal, practical UI improvements (e.g., spacing, alignment)
+- Do **not** add new features, logic, or UI elements unless they are clearly part of best practices or required for the code to function properly.
+---
+
+## Technology Stack
+1. Use **React (with Hooks)** and **Next.js (App Router)** conventions.
+2. UI components should primarily use **gluestack ui v2**.
+3. Use **Tailwind CSS** for styling and utility classes.
+4. Do **not** introduce other UI frameworks or CSS libraries unless explicitly requested by the user.
+5. Use **TypeScript** when possible unless the user specifies JavaScript.
+
+
+
+---
+
+## Styling Rules
+1. Follow **modern, minimal, and accessible** design principles.
+2. When the user does not specify a detailed design, use **simple, modern, and neutral styling**.
+3. Avoid over-styled or overly decorative designs unless requested.
+4. Use **Tailwind CSS utility classes** for styling (e.g., `className="flex items-center gap-2"`).
+5. Prefer **gluestack ui v2 components** with Tailwind classes over custom CSS when possible.
+6. Use responsive design best practices with Tailwind's responsive prefixes (e.g., `sm:`, `md:`, `lg:`, `xl:`).
+7. Follow Tailwind CSS best practices: use utility classes, avoid arbitrary values when standard utilities exist.
+
+
+---
+
+## Code Behavior
+1. Implement only what the user requests. Only implement **features explicitly requested by the user**.  
+   Do **not** add features, components, or logic beyond what the user asks for. un less it is industy practices needed. 
+2. Avoid speculative “improvements” or “creative additions” unless the user approves them. un less it is industy practices needed
+3. Provide inline comments when you make design or logic choices that could use clarification.
+4. Any additional logic should be small, essential, and easy to remove.
+5. You may extend functionality slightly **if required for the requested feature to function properly** or align with industry best practices.
+   - Example: Adding basic input validation or component reusability improvements is acceptable.
+
+---
+
+## File and Component Structure
+1. Follow standard Next.js folder conventions:
+   - `/app` for pages and layouts
+   - `/components` for reusable UI components
+   - `/styles` for global styles (if needed)
+2. Use **functional components** with clear prop types.
+3. Prefer small, focused components over large monolithic ones.
+4. Use named exports unless default exports are necessary.
+
+
+---
+
+## gluestack ui v2 & Tailwind Rules
+1. Use **gluestack ui v2 components** whenever possible (e.g., `Button`, `Card`, `Text`, `Box`, `VStack`, `HStack`).
+2. Apply styling using **Tailwind CSS utility classes** via the `className` prop.
+3. Use gluestack ui v2's component props for component-specific styling when available.
+4. Combine gluestack components with Tailwind utilities for flexible styling (e.g., `<Box className="flex items-center gap-4 p-4">`).
+5. Follow gluestack ui v2 documentation for component APIs and props.
+6. Use Tailwind's design tokens and spacing scale for consistent design.
+7. Prefer composition of gluestack components (e.g., `VStack`, `HStack`) over custom flexbox CSS.
+
+
+---
+
+## Documentation & Comments
+1. Include concise JSDoc or comment headers for non-trivial functions and components.
+2. Explain any design or implementation decisions that might not be obvious.
+3. Use clear, human-readable names for variables and components.
+
+
+---
+
+## Collaboration & Output Rules
+1. When unsure about user intent, ask for clarification before proceeding.
+2. Do not output unnecessary explanations or files unless requested.
+3. Output complete, runnable code whenever possible.
+4. Ensure generated code runs correctly in a **standard Next.js + gluestack ui v2 + Tailwind CSS setup**.
+
+
+---
+
+## Example Rule Summary (TL;DR)
+- ✅ Use: React + Next.js + gluestack ui v2 + Tailwind CSS  
+- ⚙️ Follow: Best practices, clean structure  
+- 🎨 Style: Simple, modern, accessible with Tailwind utilities  
+- 🚫 Avoid: Extra features or fancy design  
+- 💬 Add: Minimal helpful comments only  
