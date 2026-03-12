@@ -42,12 +42,7 @@ next-env.d.ts
 
 
 # zhuoyao本地开发配置文件
-CLAUDE.md
-.claude/
 start-claude.bat
 .env.chat
 .env.kimi
 .env.xAI
-.cursor/
-.github
-AGENTS.md
