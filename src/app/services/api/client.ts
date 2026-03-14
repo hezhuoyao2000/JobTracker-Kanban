@@ -11,10 +11,12 @@ import axios, {
 } from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 
-// API 基础配置
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '/api' 
-  : 'http://43.156.61.11:8080'; // 或者 'http://localhost:8080'，取决于你后端跑在哪
+// API 基础配置：生产环境走 /api 代理（由 next.config rewrites 转发到 BACKEND_URL）
+// 开发环境使用 NEXT_PUBLIC_API_BASE_URL 或默认 localhost:8080
+const API_BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? '/api'
+    : (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080');
 
 
 // Token 存储键名
