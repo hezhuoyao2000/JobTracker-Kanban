@@ -13,6 +13,9 @@ import { Divider } from '@/components/ui/divider';
 import { AddNewButton } from '../components/kanban/AddNewButton';
 import { AuthProvider, useAuth } from '../components/kanban/auth/AuthContext';
 import { UserMenu } from '../components/kanban/auth/UserMenu';
+import Link from 'next/link';
+import { House } from 'lucide-react';
+
 
 /**
  * JobPage 内容组件
@@ -29,7 +32,19 @@ function JobPageContent() {
       <div className="flex-1 flex flex-col min-h-0 w-full max-w-screen-2xl mx-auto px-6 py-6 gap-4 overflow-hidden">
         {/* Header */}
         <div className="flex justify-between items-center shrink-0">
-          <div className="flex items-center gap-3">
+          
+          <div className="flex items-center gap-5 h-full">
+            <Link
+              href="/"
+              aria-label="Back to home"
+              className={`inline-flex items-end justify-center rounded-full ${text.secondary} hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2`}
+            >
+              <House className="w-9 h-9" />
+            </Link>
+            <Divider
+              orientation="vertical"
+              className={`self-stretch border ${themeClass.divider}`}
+            />
             <h2 className={`${font.heading} ${text.primary} text-3xl font-bold`}>
               Job tracker
             </h2>

@@ -34,7 +34,7 @@ alwaysApply: true
 1. Follow **modern, minimal, and accessible** design principles.
 2. When the user does not specify a detailed design, use **simple, modern, and neutral styling**.
 3. Avoid over-styled or overly decorative designs unless requested.
-4. Use **mainGroceryColor = "#f59e0b";** at path C:\Users\***REMOVED***\Documents\gitlab\jobi-web\src\app\grocery\components\styled.ts. and other color design fit this color. unless the user explicitly asks for theme customization.
+4. Use **mainGroceryColor = "#f59e0b";** at path C:\Users\hezhuoyao\Documents\gitlab\jobi-web\src\app\grocery\components\styled.ts. and other color design fit this color. unless the user explicitly asks for theme customization.
 5. Use responsive design best practices by default.
 
 
