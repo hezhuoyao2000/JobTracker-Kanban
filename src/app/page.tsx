@@ -32,7 +32,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
           </Link>
           <Link
-            href="https://grocery.hezhuoyao.top"
+            href="https://kiwisquare.co.nz/grocery"
             target="_blank"
             rel="noopener noreferrer"
             className={`${font.heading} group relative px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl hover:from-emerald-700 hover:to-emerald-800 transition-all duration-300 text-lg font-medium shadow-lg hover:shadow-2xl hover:-translate-y-1 overflow-hidden`}
