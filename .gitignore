@@ -46,3 +46,9 @@ start-claude.bat
 .env.chat
 .env.kimi
 .env.xAI
+env.qwenplan
+.gitignore
+env.example
+env.chat
+env.download
+env.kimi
