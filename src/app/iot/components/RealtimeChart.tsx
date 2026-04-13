@@ -91,9 +91,13 @@ export function RealtimeChart({ bufferRef }: RealtimeChartProps) {
       // 忽略类型错误
     }
 
-    // 更新图表数据
+    // 更新图表数据，固定 X 轴窗口避免线图被持续压缩
     chart.setOption({
       legend: savedLegend?.selected ? { selected: savedLegend.selected } : undefined,
+      xAxis: {
+        min: minTime,
+        max: latestTime,
+      },
       series: [
         { name: 'Temperature', data: tempSeriesRef.current },
         { name: 'RPM', data: rpmSeriesRef.current },
@@ -118,6 +122,7 @@ export function RealtimeChart({ bufferRef }: RealtimeChartProps) {
     });
 
     // 图表配置
+    const initialMaxTime = Date.now();
     const option: echarts.EChartsOption = {
       animation: false,  // 关闭动画提升性���
       tooltip: {
@@ -136,6 +141,8 @@ export function RealtimeChart({ bufferRef }: RealtimeChartProps) {
       },
       xAxis: {
         type: 'time',
+        min: initialMaxTime - TIME_WINDOW,
+        max: initialMaxTime,
         axisLabel: {
           formatter: '{HH}:{mm}:{ss}',
         },
