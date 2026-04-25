@@ -14,7 +14,7 @@ import { DeviceReading, LatestData, ConnectionStatus } from '../types';
 import apiClient from '../../services/api/client';
 
 /** SSE 端点 URL */
-const SSE_URL = `${apiClient.defaults.baseURL}/api/iot/stream`;
+const SSE_URL = `${apiClient.defaults.baseURL}/iot/stream`;
 
 /**
  * 图表数据点类型
